@@ -1,48 +1,59 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+<html lang="zh-CN" data-default-color-scheme=auto>
 
 
 
 <head>
   <meta charset="UTF-8">
+
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
   <link rel="icon" href="/img/favicon.png">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="">
   <meta name="author" content="relengxing">
   <meta name="keywords" content="">
   
-  <title>kubernetes kubeadm 安装.md - relengxing blog</title>
+    <meta name="description" content="规划   IP 地址 主机名 角色 说明    192.168.1.39 k8s-master-lb, k8s-master-lb.jz-sz.com 负载均衡 虚拟 IP   192.168.1.40 k8s-master01, k8s-master01.jz-sz.com master master 节点   192.168.1.41 k8s-master02, k8s-master02.jz">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes Kubeadm 安装">
+<meta property="og:url" content="http://yoursite.com/2021/06/06/kubernetes%20kubeadm%20%E5%AE%89%E8%A3%85/index.html">
+<meta property="og:site_name" content="relengxing blog">
+<meta property="og:description" content="规划   IP 地址 主机名 角色 说明    192.168.1.39 k8s-master-lb, k8s-master-lb.jz-sz.com 负载均衡 虚拟 IP   192.168.1.40 k8s-master01, k8s-master01.jz-sz.com master master 节点   192.168.1.41 k8s-master02, k8s-master02.jz">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-06T12:12:17.000Z">
+<meta property="article:modified_time" content="2026-01-20T15:22:55.838Z">
+<meta property="article:author" content="relengxing">
+<meta property="article:tag" content="Kubernetes">
+<meta property="article:tag" content="K8S">
+<meta property="article:tag" content="容器">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Kubernetes Kubeadm 安装 - relengxing blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
 
+
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
   <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
 
-  
-    
-    
-      
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
-    
-  
-
-  
-    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
-  
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
 
 
 
@@ -51,24 +62,70 @@
 
 <link  rel="stylesheet" href="/css/main.css" />
 
-<!-- 自定义样式保持在最底部 -->
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
 
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"YOUR_BAIDU_KEY","google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
-<meta name="generator" content="Hexo 5.4.0"></head>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?YOUR_BAIDU_KEY";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
-  <header style="height: 70vh;">
-    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
-    <a class="navbar-brand"
-       href="/">&nbsp;<strong>relengxing</strong>&nbsp;</a>
+    <a class="navbar-brand" href="/">
+      <strong>relengxing</strong>
+    </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -85,9 +142,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/">
+              <a class="nav-link" href="/" target="_self">
                 <i class="iconfont icon-home-fill"></i>
-                首页
+                <span>首页</span>
               </a>
             </li>
           
@@ -97,9 +154,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/archives/">
+              <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
-                归档
+                <span>归档</span>
               </a>
             </li>
           
@@ -109,9 +166,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/categories/">
+              <a class="nav-link" href="/categories/" target="_self">
                 <i class="iconfont icon-category-fill"></i>
-                分类
+                <span>分类</span>
               </a>
             </li>
           
@@ -121,9 +178,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/tags/">
+              <a class="nav-link" href="/tags/" target="_self">
                 <i class="iconfont icon-tags-fill"></i>
-                标签
+                <span>标签</span>
               </a>
             </li>
           
@@ -133,23 +190,26 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/about/">
+              <a class="nav-link" href="/about/" target="_self">
                 <i class="iconfont icon-user-fill"></i>
-                关于
+                <span>关于</span>
               </a>
             </li>
           
         
         
           <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
-                class="iconfont icon-search"></i>&nbsp;</a>
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
           </li>
+          
         
         
           <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self">&nbsp;<i
-                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
           </li>
         
       </ul>
@@ -157,60 +217,71 @@
   </div>
 </nav>
 
-    <div class="banner" id="banner" parallax=true
-         style="background: url('/img/default.png') no-repeat center center;
-           background-size: cover;">
-      <div class="full-bg-img">
-        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-          <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="kubernetes kubeadm 安装.md">
-              
-            </span>
-
-            
-              <div class="mt-3">
-  
-  
-    <span class="post-meta">
-      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-06-06 12:12" pubdate>
-        2021年6月6日 中午
-      </time>
-    </span>
-  
-</div>
-
-<div class="mt-1">
-  
-    
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-chart"></i>
-      1.5k 字
-    </span>
   
 
-  
-    
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-clock-fill"></i>
-      
-      
-      27
-       分钟
-    </span>
-  
-
-  
-  
-</div>
-
-            
-          </div>
-
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Kubernetes Kubeadm 安装"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-06-06 12:12" pubdate>
+          2021年6月6日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
       </div>
+
+      
     </div>
+  </div>
+</div>
+
+</div>
+
   </header>
 
   <main>
@@ -219,16 +290,21 @@
 
 <div class="container-fluid nopadding-x">
   <div class="row nomargin-x">
-    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
     <div class="col-lg-8 nopadding-x-md">
       <div class="container nopadding-x-md" id="board-ctn">
-        <div class="py-5" id="board">
+        <div id="board">
           <article class="post-content mx-auto">
-            <!-- SEO header -->
-            <h1 style="display: none">kubernetes kubeadm 安装.md</h1>
+            <h1 id="seo-header">Kubernetes Kubeadm 安装</h1>
             
-            <div class="markdown-body">
-              <h1 id="规划"><a href="#规划" class="headerlink" title="规划"></a>规划</h1><table>
+            
+              <div class="markdown-body">
+                
+                <h1 id="规划"><a href="#规划" class="headerlink" title="规划"></a>规划</h1><table>
 <thead>
 <tr>
 <th>IP 地址</th>
@@ -286,56 +362,130 @@
 <td>node 节点</td>
 </tr>
 </tbody></table>
-<h1 id="调整系统参数"><a href="#调整系统参数" class="headerlink" title="调整系统参数"></a>调整系统参数</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">cat</span> &gt; /etc/sysctl.d/k<span class="hljs-number">8</span>s.conf &lt;&lt; EOF<br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.ip_forward = <span class="hljs-number">1</span><br><span class="hljs-attribute">net</span>.bridge.bridge-nf-call-iptables = <span class="hljs-number">1</span><br><span class="hljs-attribute">fs</span>.may_detach_mounts = <span class="hljs-number">1</span><br><span class="hljs-attribute">vm</span>.overcommit_memory = <span class="hljs-number">1</span><br><span class="hljs-attribute">vm</span>.panic_on_oom = <span class="hljs-number">0</span><br><span class="hljs-attribute">fs</span>.inotify.max_user_watches = <span class="hljs-number">89100</span><br><span class="hljs-attribute">fs</span>.file-max=<span class="hljs-number">52706963</span><br><span class="hljs-attribute">fs</span>.nr_open = <span class="hljs-number">52706963</span><br><span class="hljs-attribute">net</span>.netfilter.nf_conntrack_max=<span class="hljs-number">2310720</span><br><br><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_keepalive_time = <span class="hljs-number">600</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_keepalive_probes = <span class="hljs-number">3</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_keepalive_intvl = <span class="hljs-number">15</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_max_tw_buckets = <span class="hljs-number">36000</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_tw_reuse = <span class="hljs-number">1</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_max_orphans = <span class="hljs-number">327680</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_orphans_retries = <span class="hljs-number">3</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_syncookies = <span class="hljs-number">1</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_max_syn_backlog = <span class="hljs-number">16384</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_conntrack_max = <span class="hljs-number">65536</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_max_syn_backlog = <span class="hljs-number">16384</span><br><span class="hljs-attribute">net</span>.ipv<span class="hljs-number">4</span>.tcp_timestamps = <span class="hljs-number">0</span><br><span class="hljs-attribute">net</span>.core.somaxconn = <span class="hljs-number">16384</span><br><span class="hljs-attribute">EOF</span><br><span class="hljs-comment"># 立即生效</span><br><span class="hljs-attribute">sysctl</span> --system<br></code></pre></td></tr></table></figure>
+<h1 id="调整系统参数"><a href="#调整系统参数" class="headerlink" title="调整系统参数"></a>调整系统参数</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">cat</span> &gt; /etc/sysctl.d/k8s.conf &lt;&lt; EOF<br><span class="hljs-attribute">net</span>.ipv4.ip_forward = <span class="hljs-number">1</span><br><span class="hljs-attribute">net</span>.bridge.bridge-nf-call-iptables = <span class="hljs-number">1</span><br><span class="hljs-attribute">fs</span>.may_detach_mounts = <span class="hljs-number">1</span><br><span class="hljs-attribute">vm</span>.overcommit_memory = <span class="hljs-number">1</span><br><span class="hljs-attribute">vm</span>.panic_on_oom = <span class="hljs-number">0</span><br><span class="hljs-attribute">fs</span>.inotify.max_user_watches = <span class="hljs-number">89100</span><br><span class="hljs-attribute">fs</span>.file-max=<span class="hljs-number">52706963</span><br><span class="hljs-attribute">fs</span>.nr_open = <span class="hljs-number">52706963</span><br><span class="hljs-attribute">net</span>.netfilter.nf_conntrack_max=<span class="hljs-number">2310720</span><br><br><br><span class="hljs-attribute">net</span>.ipv4.tcp_keepalive_time = <span class="hljs-number">600</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_keepalive_probes = <span class="hljs-number">3</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_keepalive_intvl = <span class="hljs-number">15</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_max_tw_buckets = <span class="hljs-number">36000</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_tw_reuse = <span class="hljs-number">1</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_max_orphans = <span class="hljs-number">327680</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_orphans_retries = <span class="hljs-number">3</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_syncookies = <span class="hljs-number">1</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_max_syn_backlog = <span class="hljs-number">16384</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_conntrack_max = <span class="hljs-number">65536</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_max_syn_backlog = <span class="hljs-number">16384</span><br><span class="hljs-attribute">net</span>.ipv4.tcp_timestamps = <span class="hljs-number">0</span><br><span class="hljs-attribute">net</span>.core.somaxconn = <span class="hljs-number">16384</span><br><span class="hljs-attribute">EOF</span><br><span class="hljs-comment"># 立即生效</span><br><span class="hljs-attribute">sysctl</span> --system<br></code></pre></td></tr></table></figure>
 
-<h1 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h1><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs awk">yum install -y yum-utils<br>yum-config-manager --add-repo http:<span class="hljs-regexp">//mi</span>rrors.aliyun.com<span class="hljs-regexp">/docker-ce/</span>linux<span class="hljs-regexp">/centos/</span>docker-ce.repo<br>yum makecache fast<br>yum list docker-ce --showduplicates<br>yum install -y docker-ce-<span class="hljs-number">18.09</span>.<span class="hljs-number">9</span>-<span class="hljs-number">3</span>.el7 docker-ce-cli-<span class="hljs-number">18.09</span>.<span class="hljs-number">9</span>-<span class="hljs-number">3</span>.el7<br>systemctl enable --now docker<br>cat &gt; <span class="hljs-regexp">/etc/</span>docker/daemon.json &lt;&lt;EOF<br>&#123;<br>  <span class="hljs-string">&quot;exec-opts&quot;</span>: [<span class="hljs-string">&quot;native.cgroupdriver=systemd&quot;</span>],<br>  <span class="hljs-string">&quot;insecure-registries&quot;</span>: [<span class="hljs-string">&quot;192.168.1.138:5000&quot;</span>],<br>  <span class="hljs-string">&quot;registry-mirrors&quot;</span>: [<br>    <span class="hljs-string">&quot;https://3laho3y3.mirror.aliyuncs.com&quot;</span><br>   ],<br>  <span class="hljs-string">&quot;log-driver&quot;</span>: <span class="hljs-string">&quot;json-file&quot;</span>,<br>  <span class="hljs-string">&quot;log-opts&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;max-size&quot;</span>: <span class="hljs-string">&quot;100m&quot;</span><br>  &#125;,<br>  <span class="hljs-string">&quot;storage-driver&quot;</span>: <span class="hljs-string">&quot;overlay2&quot;</span><br>&#125;<br>EOF<br>systemctl restart docker<br><span class="hljs-comment"># 测试</span><br>docker run hello-world<br></code></pre></td></tr></table></figure>
+<h1 id="安装-docker"><a href="#安装-docker" class="headerlink" title="安装 docker"></a>安装 docker</h1><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs vim">yum install -<span class="hljs-keyword">y</span> yum-utils<br>yum-config-manager --<span class="hljs-built_in">add</span>-repo http://mirrors.aliyun.<span class="hljs-keyword">com</span>/docker-<span class="hljs-keyword">ce</span>/linux/centos/docker-<span class="hljs-keyword">ce</span>.repo<br>yum makecache fast<br>yum <span class="hljs-keyword">list</span> docker-<span class="hljs-keyword">ce</span> --showduplicates<br>yum install -<span class="hljs-keyword">y</span> docker-<span class="hljs-keyword">ce</span>-<span class="hljs-number">18.09</span>.<span class="hljs-number">9</span>-<span class="hljs-number">3</span>.el7 docker-<span class="hljs-keyword">ce</span>-cli-<span class="hljs-number">18.09</span>.<span class="hljs-number">9</span>-<span class="hljs-number">3</span>.el7<br>systemctl enable --now docker<br><span class="hljs-keyword">cat</span> &gt; /etc/docker/daemon.json &lt;&lt;EOF<br>&#123;<br>  <span class="hljs-string">&quot;exec-opts&quot;</span>: [<span class="hljs-string">&quot;native.cgroupdriver=systemd&quot;</span>],<br>  <span class="hljs-string">&quot;insecure-registries&quot;</span>: [<span class="hljs-string">&quot;192.168.1.138:5000&quot;</span>],<br>  <span class="hljs-string">&quot;registry-mirrors&quot;</span>: [<br>    <span class="hljs-string">&quot;https://3laho3y3.mirror.aliyuncs.com&quot;</span><br>   ],<br>  <span class="hljs-string">&quot;log-driver&quot;</span>: <span class="hljs-string">&quot;json-file&quot;</span>,<br>  <span class="hljs-string">&quot;log-opts&quot;</span>: &#123;<br>    <span class="hljs-string">&quot;max-size&quot;</span>: <span class="hljs-string">&quot;100m&quot;</span><br>  &#125;,<br>  <span class="hljs-string">&quot;storage-driver&quot;</span>: <span class="hljs-string">&quot;overlay2&quot;</span><br>&#125;<br>EOF<br>systemctl restart docker<br># 测试<br>docker run hello-world<br></code></pre></td></tr></table></figure>
 
 <h1 id="安装基础组件"><a href="#安装基础组件" class="headerlink" title="安装基础组件"></a>安装基础组件</h1><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs awk">vim <span class="hljs-regexp">/etc/yum</span>.repos.d/kubernetes.repo<br>cat &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span> &gt; <span class="hljs-regexp">/etc/yum</span>.repos.d/kubernetes.repo<br>[kubernetes]<br>name=Kubernetes<br>baseurl=https:<span class="hljs-regexp">//mi</span>rrors.aliyun.com<span class="hljs-regexp">/kubernetes/yum</span><span class="hljs-regexp">/repos/</span>kubernetes-el7-x86_64/<br>enable=<span class="hljs-number">1</span><br>gpgcheck=<span class="hljs-number">1</span><br>repo_gpgcheck=<span class="hljs-number">1</span><br>gpgkey=https:<span class="hljs-regexp">//mi</span>rrors.aliyun.com<span class="hljs-regexp">/kubernetes/yum</span><span class="hljs-regexp">/doc/yum</span>-key.gpg<br>              https:<span class="hljs-regexp">//mi</span>rrors.aliyun.com<span class="hljs-regexp">/kubernetes/yum</span><span class="hljs-regexp">/doc/</span>rpm-package-key.gpg<br>EOF<br><br><br>yum list kubeadm --showduplicates<br></code></pre></td></tr></table></figure>
 
 <h1 id="版本太新，阿里云镜像不支持"><a href="#版本太新，阿里云镜像不支持" class="headerlink" title="版本太新，阿里云镜像不支持"></a>版本太新，阿里云镜像不支持</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">yum</span> install -y kubelet-<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span>-<span class="hljs-number">0</span> kubeadm-<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span>-<span class="hljs-number">0</span> kubectl-<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span>-<span class="hljs-number">0</span><br><span class="hljs-attribute">systemctl</span> enable --now kubelet<br></code></pre></td></tr></table></figure>
 
-<h1 id="检查初始化需要的镜像"><a href="#检查初始化需要的镜像" class="headerlink" title="检查初始化需要的镜像"></a>检查初始化需要的镜像</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">kubeadm</span> config images list<br><span class="hljs-attribute">k8s</span>.gcr.io/kube-apiserver:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">k8s</span>.gcr.io/kube-controller-manager:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">k8s</span>.gcr.io/kube-scheduler:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">k8s</span>.gcr.io/kube-proxy:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">k8s</span>.gcr.io/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">k8s</span>.gcr.io/etcd:<span class="hljs-number">3</span>.<span class="hljs-number">3</span>.<span class="hljs-number">15</span>-<span class="hljs-number">0</span><br><span class="hljs-attribute">k8s</span>.gcr.io/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+<h1 id="检查初始化需要的镜像"><a href="#检查初始化需要的镜像" class="headerlink" title="检查初始化需要的镜像"></a>检查初始化需要的镜像</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">kubeadm</span> config images list<br><span class="hljs-attribute">k8s</span>.gcr.io/kube-apiserver:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">k8s</span>.gcr.io/kube-controller-manager:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">k8s</span>.gcr.io/kube-scheduler:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">k8s</span>.gcr.io/kube-proxy:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">k8s</span>.gcr.io/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">k8s</span>.gcr.io/etcd:<span class="hljs-number">3</span>.<span class="hljs-number">3</span>.<span class="hljs-number">15</span>-<span class="hljs-number">0</span><br><span class="hljs-attribute">k8s</span>.gcr.io/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
 
-<h1 id="使用阿里云并标记"><a href="#使用阿里云并标记" class="headerlink" title="使用阿里云并标记"></a>使用阿里云并标记</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/&#123;镜像名称&#125;:&#123;版本&#125;<br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/&#123;镜像名称&#125;:&#123;版本&#125; k<span class="hljs-number">8</span>s.gcr.io/&#123;镜像名称&#125;:&#123;版本&#125;<br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/etcd:<span class="hljs-number">3</span>.<span class="hljs-number">3</span>.<span class="hljs-number">15</span>-<span class="hljs-number">0</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><br><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k<span class="hljs-number">8</span>s.gcr.io/kube-apiserver:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k<span class="hljs-number">8</span>s.gcr.io/kube-controller-manager:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k<span class="hljs-number">8</span>s.gcr.io/kube-scheduler:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k<span class="hljs-number">8</span>s.gcr.io/kube-proxy:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span> k<span class="hljs-number">8</span>s.gcr.io/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/etcd:<span class="hljs-number">3</span>.<span class="hljs-number">3</span>.<span class="hljs-number">15</span>-<span class="hljs-number">0</span> k<span class="hljs-number">8</span>s.gcr.io/etcd:<span class="hljs-number">3</span>.<span class="hljs-number">3</span>.<span class="hljs-number">15</span>-<span class="hljs-number">0</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span> k<span class="hljs-number">8</span>s.gcr.io/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><br><br><span class="hljs-attribute">docker</span> pull quay.mirrors.ustc.edu.cn/coreos/flannel:v<span class="hljs-number">0</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd<span class="hljs-number">64</span><br><span class="hljs-attribute">docker</span> tag quay.mirrors.ustc.edu.cn/coreos/flannel:v<span class="hljs-number">0</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd<span class="hljs-number">64</span> quay.io/coreos/flannel:v<span class="hljs-number">0</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd<span class="hljs-number">64</span><br></code></pre></td></tr></table></figure>
+<h1 id="使用阿里云并标记"><a href="#使用阿里云并标记" class="headerlink" title="使用阿里云并标记"></a>使用阿里云并标记</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/&#123;镜像名称&#125;:&#123;版本&#125;<br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/&#123;镜像名称&#125;:&#123;版本&#125; k8s.gcr.io/&#123;镜像名称&#125;:&#123;版本&#125;<br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/etcd:<span class="hljs-number">3</span>.<span class="hljs-number">3</span>.<span class="hljs-number">15</span>-<span class="hljs-number">0</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><br><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k8s.gcr.io/kube-apiserver:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k8s.gcr.io/kube-controller-manager:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k8s.gcr.io/kube-scheduler:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k8s.gcr.io/kube-proxy:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span> k8s.gcr.io/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/etcd:<span class="hljs-number">3</span>.<span class="hljs-number">3</span>.<span class="hljs-number">15</span>-<span class="hljs-number">0</span> k8s.gcr.io/etcd:<span class="hljs-number">3</span>.<span class="hljs-number">3</span>.<span class="hljs-number">15</span>-<span class="hljs-number">0</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span> k8s.gcr.io/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><br><br><span class="hljs-attribute">docker</span> pull quay.mirrors.ustc.edu.cn/coreos/flannel:v0.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd64<br><span class="hljs-attribute">docker</span> tag quay.mirrors.ustc.edu.cn/coreos/flannel:v0.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd64 quay.io/coreos/flannel:v0.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd64<br></code></pre></td></tr></table></figure>
 
-<h1 id="初始化-master"><a href="#初始化-master" class="headerlink" title="初始化 master"></a>初始化 master</h1><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 添加地址，方便后续高可用，阿里云或其它云请直接使用slb</span><br>ip addr <span class="hljs-builtin-name">add</span> 192.168.122.200/32 dev eth0<br><span class="hljs-comment"># 可选，生成初始化yaml</span><br>kubeadm<span class="hljs-built_in"> config </span><span class="hljs-builtin-name">print</span> init-defaults &gt; init-defaults.yaml<br>kubeadm init <span class="hljs-attribute">--kubernetes-version</span>=1.16.6 \<br>--pod-network-cidr 10.244.0.0/16 \<br>--service-cidr 172.21.0.0/20 \<br><span class="hljs-attribute">--apiserver-advertise-address</span>=0.0.0.0 \<br>--control-plane-endpoint <span class="hljs-string">&quot;192.168.122.200:6443&quot;</span> \<br>--upload-certs \<br><span class="hljs-attribute">--ignore-preflight-errors</span>=swap<br><span class="hljs-comment"># 失败重置</span><br>kubeadm reset<br>rm -rf <span class="hljs-variable">$HOME</span>/.kube/config<br><span class="hljs-comment"># 普通用户使用 kubectl</span><br>mkdir -p <span class="hljs-variable">$HOME</span>/.kube<br>sudo cp -i /etc/kubernetes/admin.conf <span class="hljs-variable">$HOME</span>/.kube/config<br>sudo chown $(id -u):$(id -g) <span class="hljs-variable">$HOME</span>/.kube/config<br><span class="hljs-comment"># 也可以使用环境变量</span><br>scp k8s-master:/etc/kubernetes/admin.conf /etc/kubernetes/<br>echo <span class="hljs-string">&quot;export KUBECONFIG=/etc/kubernetes/admin.conf&quot;</span> &gt;&gt; ~/.bash_profile<br>source .bash_profile<br></code></pre></td></tr></table></figure>
+<h1 id="初始化-master"><a href="#初始化-master" class="headerlink" title="初始化 master"></a>初始化 master</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 添加地址，方便后续高可用，阿里云或其它云请直接使用slb</span><br>ip addr add 192.168.122.200/32 dev eth0<br><span class="hljs-comment"># 可选，生成初始化yaml</span><br>kubeadm config <span class="hljs-built_in">print</span> init-defaults &gt; init-defaults.yaml<br>kubeadm init --kubernetes-version=1.16.6 \<br>--pod-network-cidr 10.244.0.0/16 \<br>--service-cidr 172.21.0.0/20 \<br>--apiserver-advertise-address=0.0.0.0 \<br>--control-plane-endpoint <span class="hljs-string">&quot;192.168.122.200:6443&quot;</span> \<br>--upload-certs \<br>--ignore-preflight-errors=swap<br><span class="hljs-comment"># 失败重置</span><br>kubeadm reset<br><span class="hljs-built_in">rm</span> -rf <span class="hljs-variable">$HOME</span>/.kube/config<br><span class="hljs-comment"># 普通用户使用 kubectl</span><br><span class="hljs-built_in">mkdir</span> -p <span class="hljs-variable">$HOME</span>/.kube<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> -i /etc/kubernetes/admin.conf <span class="hljs-variable">$HOME</span>/.kube/config<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chown</span> $(<span class="hljs-built_in">id</span> -u):$(<span class="hljs-built_in">id</span> -g) <span class="hljs-variable">$HOME</span>/.kube/config<br><span class="hljs-comment"># 也可以使用环境变量</span><br>scp k8s-master:/etc/kubernetes/admin.conf /etc/kubernetes/<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;export KUBECONFIG=/etc/kubernetes/admin.conf&quot;</span> &gt;&gt; ~/.bash_profile<br><span class="hljs-built_in">source</span> .bash_profile<br></code></pre></td></tr></table></figure>
 
 <h1 id="配置网络，使用-flannel"><a href="#配置网络，使用-flannel" class="headerlink" title="配置网络，使用 flannel"></a>配置网络，使用 flannel</h1><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-comment"># wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span><br>wget https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/coreos/</span>flannel<span class="hljs-regexp">/blob/m</span>aster<span class="hljs-regexp">/Documentation/</span>kube-flannel.yml<br><span class="hljs-comment"># 替换为对应网段</span><br>net-conf.json: |<br>    &#123;<br>      <span class="hljs-string">&quot;Network&quot;</span>: <span class="hljs-string">&quot;10.244.0.0/16&quot;</span>,<br>      <span class="hljs-string">&quot;Backend&quot;</span>: &#123;<br>        <span class="hljs-string">&quot;Type&quot;</span>: <span class="hljs-string">&quot;vxlan&quot;</span><br>      &#125;<br>    &#125;<br>docker pull quay.mirrors.ustc.edu.cn<span class="hljs-regexp">/coreos/</span>flannel:v0.<span class="hljs-number">12.0</span>-amd64<br>docker tag quay.mirrors.ustc.edu.cn<span class="hljs-regexp">/coreos/</span>flannel:v0.<span class="hljs-number">12.0</span>-amd64 quay.io<span class="hljs-regexp">/coreos/</span>flannel:v0.<span class="hljs-number">12.0</span>-amd64<br>kubectl apply -f kube-flannel.yml<br></code></pre></td></tr></table></figure>
 
-<h1 id="查看集群状态"><a href="#查看集群状态" class="headerlink" title="查看集群状态"></a>查看集群状态</h1><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">kubectl <span class="hljs-builtin-name">get</span> nodes<br><span class="hljs-comment"># 检查集群配置</span><br>kubectl -n kube-system <span class="hljs-builtin-name">get</span> cm kubeadm-config -o yaml<br></code></pre></td></tr></table></figure>
+<h1 id="查看集群状态"><a href="#查看集群状态" class="headerlink" title="查看集群状态"></a>查看集群状态</h1><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">kubectl <span class="hljs-built_in">get</span> nodes<br><span class="hljs-comment"># 检查集群配置</span><br>kubectl -n kube-system <span class="hljs-built_in">get</span> cm kubeadm-config -o yaml<br></code></pre></td></tr></table></figure>
 
-<h1 id="node-拉取镜像"><a href="#node-拉取镜像" class="headerlink" title="node 拉取镜像"></a>node 拉取镜像</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><br><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k<span class="hljs-number">8</span>s.gcr.io/kube-proxy:v<span class="hljs-number">1</span>.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span> k<span class="hljs-number">8</span>s.gcr.io/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span> k<span class="hljs-number">8</span>s.gcr.io/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><br><br><span class="hljs-attribute">docker</span> pull quay.mirrors.ustc.edu.cn/coreos/flannel:v<span class="hljs-number">0</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd<span class="hljs-number">64</span><br><span class="hljs-attribute">docker</span> tag quay.mirrors.ustc.edu.cn/coreos/flannel:v<span class="hljs-number">0</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd<span class="hljs-number">64</span> quay.io/coreos/flannel:v<span class="hljs-number">0</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd<span class="hljs-number">64</span><br></code></pre></td></tr></table></figure>
+<h1 id="node-拉取镜像"><a href="#node-拉取镜像" class="headerlink" title="node 拉取镜像"></a>node 拉取镜像</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><br><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span> k8s.gcr.io/kube-proxy:v1.<span class="hljs-number">16</span>.<span class="hljs-number">6</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span> k8s.gcr.io/pause:<span class="hljs-number">3</span>.<span class="hljs-number">1</span><br><span class="hljs-attribute">docker</span> tag registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span> k8s.gcr.io/coredns:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><br><br><span class="hljs-attribute">docker</span> pull quay.mirrors.ustc.edu.cn/coreos/flannel:v0.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd64<br><span class="hljs-attribute">docker</span> tag quay.mirrors.ustc.edu.cn/coreos/flannel:v0.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd64 quay.io/coreos/flannel:v0.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd64<br></code></pre></td></tr></table></figure>
 
 <h1 id="加入集群"><a href="#加入集群" class="headerlink" title="加入集群"></a>加入集群</h1><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs gauss"><span class="hljs-meta"># 添加 master</span><br>kubeadm init phase upload-certs --upload-certs<br>kubeadm <span class="hljs-built_in">token</span> <span class="hljs-keyword">create</span> --<span class="hljs-keyword">print</span>-join-command<br><span class="hljs-meta"># 合并</span><br>kubeadm join <span class="hljs-number">192.168</span><span class="hljs-number">.122</span><span class="hljs-number">.252</span>:<span class="hljs-number">6443</span> --<span class="hljs-built_in">token</span> qmihb0<span class="hljs-number">.2</span>j6ikktkew8ch3vz     --discovery-<span class="hljs-built_in">token</span>-ca-cert-hash sha256:db586028c918052bfb1b657472a4bee3d114de93b809b5ff8b53b3b7bded665a \<br>--control-plane --certificate-<span class="hljs-built_in">key</span> <span class="hljs-number">0</span>b84889916022953e6777da8babe9b643131d104a1d7f91db1a6ae7ddc60d18b<br><span class="hljs-meta"># 添加 node</span><br>kubeadm <span class="hljs-built_in">token</span> <span class="hljs-keyword">create</span> --<span class="hljs-keyword">print</span>-join-command<br>kubeadm join <span class="hljs-number">192.168</span><span class="hljs-number">.122</span><span class="hljs-number">.252</span>:<span class="hljs-number">6443</span> --<span class="hljs-built_in">token</span> uopfdg.haazo24wvd8qxxxd \<br>    --discovery-<span class="hljs-built_in">token</span>-ca-cert-hash sha256:db586028c918052bfb1b657472a4bee3d114de93b809b5ff8b53b3b7bded665a<br><span class="hljs-meta"># 删除节点</span><br>kubectl drain NODE_ID --<span class="hljs-keyword">delete</span>-<span class="hljs-keyword">local</span>-data --force --ignore-daemonsets<br>kubectl <span class="hljs-keyword">delete</span> node NODE_ID<br>kubeadm reset<br></code></pre></td></tr></table></figure>
 
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment">#  查看集群版本信息</span><br>kubectl version <span class="hljs-attribute">--short</span>=<span class="hljs-literal">true</span><br>kubectl cluster-info<br><span class="hljs-comment"># 查看所有pod 状态</span><br>kubectl <span class="hljs-builtin-name">get</span> pods <span class="hljs-attribute">--namespace</span>=kube-system<br><span class="hljs-comment"># 查看 pod 状态</span><br>kubectl describe pod kub-proxy-t64ab <span class="hljs-attribute">--namespace</span>=kube-system<br></code></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment">#  查看集群版本信息</span><br>kubectl version <span class="hljs-attribute">--short</span>=<span class="hljs-literal">true</span><br>kubectl cluster-<span class="hljs-built_in">info</span><br><span class="hljs-comment"># 查看所有pod 状态</span><br>kubectl <span class="hljs-built_in">get</span> pods <span class="hljs-attribute">--namespace</span>=kube-system<br><span class="hljs-comment"># 查看 pod 状态</span><br>kubectl describe pod kub-proxy-t64ab <span class="hljs-attribute">--namespace</span>=kube-system<br></code></pre></td></tr></table></figure>
 
-<h1 id="安装-helm"><a href="#安装-helm" class="headerlink" title="安装 helm"></a>安装 helm</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">helm</span> version<br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/kubernetes-helm/tiller:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">docker</span> tag quay.mirrors.ustc.edu.cn/coreos/flannel:v<span class="hljs-number">0</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd<span class="hljs-number">64</span> quay.io/coreos/flannel:v<span class="hljs-number">0</span>.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd<span class="hljs-number">64</span><br></code></pre></td></tr></table></figure>
+<h1 id="安装-helm"><a href="#安装-helm" class="headerlink" title="安装 helm"></a>安装 helm</h1><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">helm</span> version<br><span class="hljs-attribute">docker</span> pull registry.cn-hangzhou.aliyuncs.com/kubernetes-helm/tiller:<span class="hljs-number">1</span>.<span class="hljs-number">6</span>.<span class="hljs-number">2</span><br><span class="hljs-attribute">docker</span> tag quay.mirrors.ustc.edu.cn/coreos/flannel:v0.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd64 quay.io/coreos/flannel:v0.<span class="hljs-number">12</span>.<span class="hljs-number">0</span>-amd64<br></code></pre></td></tr></table></figure>
 
-<h1 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h1><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs awk">docker pull quay.mirrors.ustc.edu.cn quay 镜像错误：net<span class="hljs-regexp">/http: TLS handshake timeout ，将https:/</span><span class="hljs-regexp">/quay.mirrors.ustc.edu.cn&quot; 加入/</span>etc<span class="hljs-regexp">/docker/</span>daemon.json register-mirrors<br>cgdriver 不一致导致不能启动问题<br>cat <span class="hljs-regexp">/etc/</span>docker/daemon.json<br>cat <span class="hljs-regexp">/etc/</span>sysconfig/kubelet<br>KUBELET_EXTRA_ARGS=--cgroup-driver=systemd<br>重启 pod<br>kubectl get pod &#123;podname&#125; -n &#123;namespace&#125; -o yaml | kubectl replace --force -f -<br>kubectl <span class="hljs-keyword">delete</span> pod -n &#123;namespace&#125; &#123;podname&#125;s<br></code></pre></td></tr></table></figure>
+<h1 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h1><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs fsharp">docker pull quay.mirrors.ustc.edu.cn quay 镜像错误：net<span class="hljs-operator">/</span>http<span class="hljs-operator">:</span> TLS handshake timeout ，将https<span class="hljs-operator">:</span><span class="hljs-comment">//quay.mirrors.ustc.edu.cn&quot; 加入/etc/docker/daemon.json register-mirrors</span><br>cgdriver 不一致导致不能启动问题<br>cat <span class="hljs-operator">/</span>etc<span class="hljs-operator">/</span>docker<span class="hljs-operator">/</span>daemon.json<br>cat <span class="hljs-operator">/</span>etc<span class="hljs-operator">/</span>sysconfig<span class="hljs-operator">/</span>kubelet<br>KUBELET_EXTRA_ARGS<span class="hljs-operator">=--</span>cgroup<span class="hljs-operator">-</span>driver<span class="hljs-operator">=</span>systemd<br>重启 pod<br>kubectl <span class="hljs-built_in">get</span> <span class="hljs-keyword">pod</span> &#123;podname&#125; <span class="hljs-operator">-</span><span class="hljs-keyword">n</span> &#123;<span class="hljs-keyword">namespace</span>&#125; <span class="hljs-operator">-</span>o yaml <span class="hljs-operator">|</span> kubectl replace <span class="hljs-operator">--</span>force <span class="hljs-operator">-</span>f <span class="hljs-operator">-</span><br>kubectl delete pod <span class="hljs-operator">-</span><span class="hljs-keyword">n</span> &#123;<span class="hljs-keyword">namespace</span>&#125; &#123;podname&#125;s<br></code></pre></td></tr></table></figure>
 
-            </div>
-            <hr>
-            <div>
-              <div class="post-metas mb-3">
-                
                 
               </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%BF%90%E7%BB%B4%E9%83%A8%E7%BD%B2/" class="category-chain-item">运维部署</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Kubernetes/" class="print-no-link">#Kubernetes</a>
+      
+        <a href="/tags/K8S/" class="print-no-link">#K8S</a>
+      
+        <a href="/tags/%E5%AE%B9%E5%99%A8/" class="print-no-link">#容器</a>
+      
+    </div>
+  
+</div>
+
+
               
-                <p class="note note-warning">
-                  
-                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
-                  
-                </p>
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Kubernetes Kubeadm 安装</div>
+      <div>http://yoursite.com/2021/06/06/kubernetes kubeadm 安装/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>relengxing</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年6月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
               
               
-                <div class="post-prevnext">
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/08/06/jenkins-cicd%E9%83%A8%E7%BD%B2/">
+                      <a href="/2021/08/06/jenkins-cicd%E9%83%A8%E7%BD%B2/" title="Jenkins CICD部署">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">jenkins_CICD部署.md</span>
+                        <span class="hidden-mobile">Jenkins CICD部署</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -343,8 +493,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/02/22/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E7%BA%BF%E4%B8%8A%E5%AE%95%E6%9C%BA%E7%9A%84%E9%97%AE%E9%A2%982020-02-20-md/">
-                        <span class="hidden-mobile">记录一次线上宕机的问题2020_02_20.md</span>
+                      <a href="/2021/02/22/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E7%BA%BF%E4%B8%8A%E5%AE%95%E6%9C%BA%E7%9A%84%E9%97%AE%E9%A2%982020-02-20-md/" title="记录一次线上宕机的问题">
+                        <span class="hidden-mobile">记录一次线上宕机的问题</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -359,25 +509,59 @@
         </div>
       </div>
     </div>
-    
-      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
-        <div id="toc">
-  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
   <div class="toc-body" id="toc-body"></div>
 </div>
 
-      </div>
-    
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-<!-- Custom -->
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
 
 
     
 
     
-      <a id="scroll-top-button" href="#" role="button">
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
         <i class="iconfont icon-arrowup" aria-hidden="true"></i>
       </a>
     
@@ -396,32 +580,29 @@
       <div class="modal-body mx-3">
         <div class="md-form mb-5">
           <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v"
-                 for="local-search-input">关键词</label>
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
         </div>
         <div class="list-group" id="local-search-result"></div>
       </div>
     </div>
   </div>
 </div>
+
     
 
     
   </main>
 
-  <footer class="text-center mt-5 py-3">
-  <div class="footer-content">
-    
-  </div>
+  <footer>
+    <div class="footer-inner">
   
-
   
-
   
-</footer>
+</div>
 
+  </footer>
 
-  <!-- SCRIPTS -->
+  <!-- Scripts -->
   
   <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
@@ -440,7 +621,23 @@
 <script  src="/js/events.js" ></script>
 <script  src="/js/plugins.js" ></script>
 
-<!-- Plugins -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
 
 
   
@@ -449,25 +646,99 @@
 
 
 
+
   
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
 
 
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
 
-  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
-
-
-
-  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+  <script>Fluid.plugins.codeWidget();</script>
 
 
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
 
-  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
 
 
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
 
-  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
 
-
+  <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
 
@@ -475,35 +746,15 @@
 
 
 
-
-  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var title = document.getElementById('subtitle').title;
-      
-      typing(title)
-      
-    })(window, document);
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 主题的启动项 保持在最底部 -->
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
 <script  src="/js/boot.js" ></script>
 
 
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
 </html>

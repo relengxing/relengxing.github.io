@@ -1,49 +1,60 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+<html lang="zh-CN" data-default-color-scheme=auto>
 
 
 
 <head>
   <meta charset="UTF-8">
+
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
   <link rel="icon" href="/img/favicon.png">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="最近有个项目要传输密码，密码当然不能明文传输。需要前端加密，后端解密。加密算法使用 RSA。
-使用注解加 AOP 实现">
   <meta name="author" content="relengxing">
   <meta name="keywords" content="">
+  
+    <meta name="description" content="最近有个项目要传输密码，密码当然不能明文传输。需要前端加密，后端解密。加密算法使用 RSA。 使用注解加 AOP 实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="注解实现字段自动解密">
+<meta property="og:url" content="http://yoursite.com/2020/07/10/%E6%B3%A8%E8%A7%A3%E5%AE%9E%E7%8E%B0%E5%AD%97%E6%AE%B5%E8%87%AA%E5%8A%A8%E8%A7%A3%E5%AF%86/index.html">
+<meta property="og:site_name" content="relengxing blog">
+<meta property="og:description" content="最近有个项目要传输密码，密码当然不能明文传输。需要前端加密，后端解密。加密算法使用 RSA。 使用注解加 AOP 实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-10T10:42:12.000Z">
+<meta property="article:modified_time" content="2026-01-20T15:22:55.847Z">
+<meta property="article:author" content="relengxing">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="AOP">
+<meta property="article:tag" content="RSA加密">
+<meta property="article:tag" content="安全">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
   
   <title>注解实现字段自动解密 - relengxing blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
 
+
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
   <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
 
-  
-    
-    
-      
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
-    
-  
-
-  
-    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
-  
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
 
 
 
@@ -52,24 +63,70 @@
 
 <link  rel="stylesheet" href="/css/main.css" />
 
-<!-- 自定义样式保持在最底部 -->
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
 
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"YOUR_BAIDU_KEY","google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
-<meta name="generator" content="Hexo 5.4.0"></head>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?YOUR_BAIDU_KEY";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
-  <header style="height: 70vh;">
-    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
-    <a class="navbar-brand"
-       href="/">&nbsp;<strong>relengxing</strong>&nbsp;</a>
+    <a class="navbar-brand" href="/">
+      <strong>relengxing</strong>
+    </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -86,9 +143,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/">
+              <a class="nav-link" href="/" target="_self">
                 <i class="iconfont icon-home-fill"></i>
-                首页
+                <span>首页</span>
               </a>
             </li>
           
@@ -98,9 +155,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/archives/">
+              <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
-                归档
+                <span>归档</span>
               </a>
             </li>
           
@@ -110,9 +167,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/categories/">
+              <a class="nav-link" href="/categories/" target="_self">
                 <i class="iconfont icon-category-fill"></i>
-                分类
+                <span>分类</span>
               </a>
             </li>
           
@@ -122,9 +179,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/tags/">
+              <a class="nav-link" href="/tags/" target="_self">
                 <i class="iconfont icon-tags-fill"></i>
-                标签
+                <span>标签</span>
               </a>
             </li>
           
@@ -134,23 +191,26 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/about/">
+              <a class="nav-link" href="/about/" target="_self">
                 <i class="iconfont icon-user-fill"></i>
-                关于
+                <span>关于</span>
               </a>
             </li>
           
         
         
           <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
-                class="iconfont icon-search"></i>&nbsp;</a>
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
           </li>
+          
         
         
           <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self">&nbsp;<i
-                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
           </li>
         
       </ul>
@@ -158,60 +218,71 @@
   </div>
 </nav>
 
-    <div class="banner" id="banner" parallax=true
-         style="background: url('/img/default.png') no-repeat center center;
-           background-size: cover;">
-      <div class="full-bg-img">
-        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-          <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="注解实现字段自动解密">
-              
-            </span>
-
-            
-              <div class="mt-3">
-  
-  
-    <span class="post-meta">
-      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-07-10 10:42" pubdate>
-        2020年7月10日 上午
-      </time>
-    </span>
-  
-</div>
-
-<div class="mt-1">
-  
-    
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-chart"></i>
-      1.5k 字
-    </span>
   
 
-  
-    
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-clock-fill"></i>
-      
-      
-      23
-       分钟
-    </span>
-  
-
-  
-  
-</div>
-
-            
-          </div>
-
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="注解实现字段自动解密"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-07-10 10:42" pubdate>
+          2020年7月10日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
       </div>
+
+      
     </div>
+  </div>
+</div>
+
+</div>
+
   </header>
 
   <main>
@@ -220,21 +291,26 @@
 
 <div class="container-fluid nopadding-x">
   <div class="row nomargin-x">
-    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
     <div class="col-lg-8 nopadding-x-md">
       <div class="container nopadding-x-md" id="board-ctn">
-        <div class="py-5" id="board">
+        <div id="board">
           <article class="post-content mx-auto">
-            <!-- SEO header -->
-            <h1 style="display: none">注解实现字段自动解密</h1>
+            <h1 id="seo-header">注解实现字段自动解密</h1>
             
-            <div class="markdown-body">
-              <p>最近有个项目要传输密码，密码当然不能明文传输。需要前端加密，后端解密。<br>加密算法使用 RSA。</p>
+            
+              <div class="markdown-body">
+                
+                <p>最近有个项目要传输密码，密码当然不能明文传输。需要前端加密，后端解密。<br>加密算法使用 RSA。</p>
 <p>使用注解加 AOP 实现</p>
 <span id="more"></span>
 
 <p>RSA 工具类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> javax.crypto.Cipher;<br><span class="hljs-keyword">import</span> java.security.*;<br><span class="hljs-keyword">import</span> java.security.spec.InvalidKeySpecException;<br><span class="hljs-keyword">import</span> java.security.spec.PKCS8EncodedKeySpec;<br><span class="hljs-keyword">import</span> java.security.spec.X509EncodedKeySpec;<br><span class="hljs-keyword">import</span> java.util.Arrays;<br><span class="hljs-keyword">import</span> java.util.Base64;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> chaoli</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2020-07-09 10:45</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RSAUtil</span> </span>&#123;<br><br>    <span class="hljs-comment">//非对称密钥算法</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String KEY_ALGORITHM = <span class="hljs-string">&quot;RSA&quot;</span>;<br>    <span class="hljs-comment">//密钥长度，在512到65536位之间，建议不要太长，否则速度很慢，生成的加密数据很长</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> KEY_SIZE = <span class="hljs-number">512</span>;<br>    <span class="hljs-comment">//字符编码</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String CHARSET = <span class="hljs-string">&quot;UTF-8&quot;</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 生成密钥对</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> KeyPair 密钥对</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> KeyPair <span class="hljs-title">getKeyPair</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-keyword">return</span> getKeyPair(<span class="hljs-keyword">null</span>);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 生成密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> password 生成密钥对的密码</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> Exception</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> KeyPair <span class="hljs-title">getKeyPair</span><span class="hljs-params">(String password)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-comment">//实例化密钥生成器</span><br>        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//初始化密钥生成器</span><br>        <span class="hljs-keyword">if</span>(password == <span class="hljs-keyword">null</span>)&#123;<br>            keyPairGenerator.initialize(KEY_SIZE);<br>        &#125;<span class="hljs-keyword">else</span> &#123;<br>            SecureRandom secureRandom = SecureRandom.getInstance(<span class="hljs-string">&quot;SHA1PRNG&quot;</span>);<br>            secureRandom.setSeed(password.getBytes(CHARSET));<br>            keyPairGenerator.initialize(KEY_SIZE, secureRandom);<br>        &#125;<br>        <span class="hljs-comment">//生成密钥对</span><br>        <span class="hljs-keyword">return</span> keyPairGenerator.generateKeyPair();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 取得私钥</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> keyPair 密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 私钥</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">byte</span>[] getPrivateKeyBytes(KeyPair keyPair) &#123;<br>        <span class="hljs-keyword">return</span> keyPair.getPrivate().getEncoded();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 取得Base64编码的私钥</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> keyPair 密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String Base64编码的私钥</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getPrivateKey</span><span class="hljs-params">(KeyPair keyPair)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> Base64.getEncoder().encodeToString(getPrivateKeyBytes(keyPair));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 取得公钥</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> keyPair 密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 公钥</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">byte</span>[] getPublicKeyBytes(KeyPair keyPair) &#123;<br>        <span class="hljs-keyword">return</span> keyPair.getPublic().getEncoded();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 取得Base64编码的公钥</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> keyPair 密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String Base64编码的公钥</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getPublicKey</span><span class="hljs-params">(KeyPair keyPair)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> Base64.getEncoder().encodeToString(getPublicKeyBytes(keyPair));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 私钥加密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data       待加密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> privateKey 私钥字节数组</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 加密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">byte</span>[] encryptByPrivateKey(<span class="hljs-keyword">byte</span>[] data, <span class="hljs-keyword">byte</span>[] privateKey) <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">//实例化密钥工厂</span><br>        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//生成私钥</span><br>        PrivateKey key = keyFactory.generatePrivate(<span class="hljs-keyword">new</span> PKCS8EncodedKeySpec(privateKey));<br>        <span class="hljs-comment">//数据加密</span><br>        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);<br>        cipher.init(Cipher.ENCRYPT_MODE, key);<br>        <span class="hljs-keyword">return</span> cipher.doFinal(data);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 私钥加密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data       待加密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> privateKey Base64编码的私钥</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String Base64编码的加密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">encryptByPrivateKey</span><span class="hljs-params">(String data, String privateKey)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-keyword">byte</span>[] key = Base64.getDecoder().decode(privateKey);<br>        <span class="hljs-keyword">return</span> Base64.getEncoder().encodeToString(encryptByPrivateKey(data.getBytes(CHARSET), key));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 公钥加密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data      待加密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> publicKey 公钥字节数组</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 加密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">byte</span>[] encryptByPublicKey(<span class="hljs-keyword">byte</span>[] data, <span class="hljs-keyword">byte</span>[] publicKey) <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">//实例化密钥工厂</span><br>        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//生成公钥</span><br>        PublicKey key = keyFactory.generatePublic(<span class="hljs-keyword">new</span> X509EncodedKeySpec(publicKey));<br>        <span class="hljs-comment">//数据加密</span><br>        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);<br>        cipher.init(Cipher.ENCRYPT_MODE, key);<br>        <span class="hljs-keyword">return</span> cipher.doFinal(data);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 公钥加密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data      待加密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> publicKey Base64编码的公钥</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String Base64编码的加密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">encryptByPublicKey</span><span class="hljs-params">(String data, String publicKey)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-keyword">byte</span>[] key = Base64.getDecoder().decode(publicKey);<br>        <span class="hljs-keyword">return</span> Base64.getEncoder().encodeToString(encryptByPublicKey(data.getBytes(CHARSET), key));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 私钥解密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data       待解密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> privateKey 私钥字节数组</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 解密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">byte</span>[] decryptByPrivateKey(<span class="hljs-keyword">byte</span>[] data, <span class="hljs-keyword">byte</span>[] privateKey) <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">//实例化密钥工厂</span><br>        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//生成私钥</span><br>        PrivateKey key = keyFactory.generatePrivate(<span class="hljs-keyword">new</span> PKCS8EncodedKeySpec(privateKey));<br>        <span class="hljs-comment">//数据解密</span><br>        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);<br>        cipher.init(Cipher.DECRYPT_MODE, key);<br>        <span class="hljs-keyword">return</span> cipher.doFinal(data);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 私钥解密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data       Base64编码的待解密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> privateKey Base64编码的私钥</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String 解密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">decryptByPrivateKey</span><span class="hljs-params">(String data, String privateKey)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-keyword">byte</span>[] key = Base64.getDecoder().decode(privateKey);<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> String(decryptByPrivateKey(Base64.getDecoder().decode(data), key), CHARSET);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 公钥解密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data      待解密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> publicKey 公钥字节数组</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 解密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">byte</span>[] decryptByPublicKey(<span class="hljs-keyword">byte</span>[] data, <span class="hljs-keyword">byte</span>[] publicKey) <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">//实例化密钥工厂</span><br>        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//产生公钥</span><br>        PublicKey key = keyFactory.generatePublic(<span class="hljs-keyword">new</span> X509EncodedKeySpec(publicKey));<br>        <span class="hljs-comment">//数据解密</span><br>        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);<br>        cipher.init(Cipher.DECRYPT_MODE, key);<br>        <span class="hljs-keyword">return</span> cipher.doFinal(data);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 公钥解密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data      Base64编码的待解密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> publicKey Base64编码的公钥</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String 解密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">decryptByPublicKey</span><span class="hljs-params">(String data, String publicKey)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        <span class="hljs-keyword">byte</span>[] key = Base64.getDecoder().decode(publicKey);<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> String(decryptByPublicKey(Base64.getDecoder().decode(data), key), CHARSET);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 测试加解密方法</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> args</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> Exception</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>       <span class="hljs-comment">//生成密钥对，一般生成之后可以放到配置文件中</span><br>       KeyPair keyPair = RSAUtil.getKeyPair();<br>       <span class="hljs-comment">//公钥</span><br>       String publicKey = RSAUtil.getPublicKey(keyPair);<br>       <span class="hljs-comment">//私钥</span><br>       String privateKey = RSAUtil.getPrivateKey(keyPair);<br><br>        System.out.println(<span class="hljs-string">&quot;公钥：\n&quot;</span> + publicKey);<br>        System.out.println(<span class="hljs-string">&quot;私钥：\n&quot;</span> + privateKey);<br><br>        String data = <span class="hljs-string">&quot;123321&quot;</span>;<br>        &#123;<br>            System.out.println(<span class="hljs-string">&quot;\n===========私钥加密，公钥解密==============&quot;</span>);<br>            String s1 = RSAUtil.encryptByPrivateKey(data, privateKey);<br>            System.out.println(<span class="hljs-string">&quot;加密后的数据:&quot;</span> + s1);<br>            String s2 = RSAUtil.decryptByPublicKey(s1, publicKey);<br>            System.out.println(<span class="hljs-string">&quot;解密后的数据:&quot;</span> + s2 + <span class="hljs-string">&quot;\n\n&quot;</span>);<br>        &#125;<br><br>        &#123;<br>            System.out.println(<span class="hljs-string">&quot;\n===========公钥加密，私钥解密==============&quot;</span>);<br>            String s1 = RSAUtil.encryptByPublicKey(data, publicKey);<br>            System.out.println(<span class="hljs-string">&quot;加密后的数据:&quot;</span> + s1);<br>            String s2 = RSAUtil.decryptByPrivateKey(s1, privateKey);<br>            System.out.println(<span class="hljs-string">&quot;解密后的数据:&quot;</span> + s2 + <span class="hljs-string">&quot;\n\n&quot;</span>);<br>        &#125;<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> javax.crypto.Cipher;<br><span class="hljs-keyword">import</span> java.security.*;<br><span class="hljs-keyword">import</span> java.security.spec.InvalidKeySpecException;<br><span class="hljs-keyword">import</span> java.security.spec.PKCS8EncodedKeySpec;<br><span class="hljs-keyword">import</span> java.security.spec.X509EncodedKeySpec;<br><span class="hljs-keyword">import</span> java.util.Arrays;<br><span class="hljs-keyword">import</span> java.util.Base64;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> chaoli</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2020-07-09 10:45</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">RSAUtil</span> &#123;<br><br>    <span class="hljs-comment">//非对称密钥算法</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">KEY_ALGORITHM</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;RSA&quot;</span>;<br>    <span class="hljs-comment">//密钥长度，在512到65536位之间，建议不要太长，否则速度很慢，生成的加密数据很长</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">KEY_SIZE</span> <span class="hljs-operator">=</span> <span class="hljs-number">512</span>;<br>    <span class="hljs-comment">//字符编码</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">CHARSET</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;UTF-8&quot;</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 生成密钥对</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> KeyPair 密钥对</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> KeyPair <span class="hljs-title function_">getKeyPair</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-keyword">return</span> getKeyPair(<span class="hljs-literal">null</span>);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 生成密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> password 生成密钥对的密码</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> Exception</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> KeyPair <span class="hljs-title function_">getKeyPair</span><span class="hljs-params">(String password)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">//实例化密钥生成器</span><br>        <span class="hljs-type">KeyPairGenerator</span> <span class="hljs-variable">keyPairGenerator</span> <span class="hljs-operator">=</span> KeyPairGenerator.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//初始化密钥生成器</span><br>        <span class="hljs-keyword">if</span>(password == <span class="hljs-literal">null</span>)&#123;<br>            keyPairGenerator.initialize(KEY_SIZE);<br>        &#125;<span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-type">SecureRandom</span> <span class="hljs-variable">secureRandom</span> <span class="hljs-operator">=</span> SecureRandom.getInstance(<span class="hljs-string">&quot;SHA1PRNG&quot;</span>);<br>            secureRandom.setSeed(password.getBytes(CHARSET));<br>            keyPairGenerator.initialize(KEY_SIZE, secureRandom);<br>        &#125;<br>        <span class="hljs-comment">//生成密钥对</span><br>        <span class="hljs-keyword">return</span> keyPairGenerator.generateKeyPair();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 取得私钥</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> keyPair 密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 私钥</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] getPrivateKeyBytes(KeyPair keyPair) &#123;<br>        <span class="hljs-keyword">return</span> keyPair.getPrivate().getEncoded();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 取得Base64编码的私钥</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> keyPair 密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String Base64编码的私钥</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">getPrivateKey</span><span class="hljs-params">(KeyPair keyPair)</span> &#123;<br>        <span class="hljs-keyword">return</span> Base64.getEncoder().encodeToString(getPrivateKeyBytes(keyPair));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 取得公钥</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> keyPair 密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 公钥</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] getPublicKeyBytes(KeyPair keyPair) &#123;<br>        <span class="hljs-keyword">return</span> keyPair.getPublic().getEncoded();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 取得Base64编码的公钥</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> keyPair 密钥对</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String Base64编码的公钥</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">getPublicKey</span><span class="hljs-params">(KeyPair keyPair)</span> &#123;<br>        <span class="hljs-keyword">return</span> Base64.getEncoder().encodeToString(getPublicKeyBytes(keyPair));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 私钥加密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data       待加密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> privateKey 私钥字节数组</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 加密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] encryptByPrivateKey(<span class="hljs-type">byte</span>[] data, <span class="hljs-type">byte</span>[] privateKey) <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">//实例化密钥工厂</span><br>        <span class="hljs-type">KeyFactory</span> <span class="hljs-variable">keyFactory</span> <span class="hljs-operator">=</span> KeyFactory.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//生成私钥</span><br>        <span class="hljs-type">PrivateKey</span> <span class="hljs-variable">key</span> <span class="hljs-operator">=</span> keyFactory.generatePrivate(<span class="hljs-keyword">new</span> <span class="hljs-title class_">PKCS8EncodedKeySpec</span>(privateKey));<br>        <span class="hljs-comment">//数据加密</span><br>        <span class="hljs-type">Cipher</span> <span class="hljs-variable">cipher</span> <span class="hljs-operator">=</span> Cipher.getInstance(KEY_ALGORITHM);<br>        cipher.init(Cipher.ENCRYPT_MODE, key);<br>        <span class="hljs-keyword">return</span> cipher.doFinal(data);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 私钥加密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data       待加密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> privateKey Base64编码的私钥</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String Base64编码的加密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">encryptByPrivateKey</span><span class="hljs-params">(String data, String privateKey)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">byte</span>[] key = Base64.getDecoder().decode(privateKey);<br>        <span class="hljs-keyword">return</span> Base64.getEncoder().encodeToString(encryptByPrivateKey(data.getBytes(CHARSET), key));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 公钥加密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data      待加密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> publicKey 公钥字节数组</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 加密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] encryptByPublicKey(<span class="hljs-type">byte</span>[] data, <span class="hljs-type">byte</span>[] publicKey) <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">//实例化密钥工厂</span><br>        <span class="hljs-type">KeyFactory</span> <span class="hljs-variable">keyFactory</span> <span class="hljs-operator">=</span> KeyFactory.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//生成公钥</span><br>        <span class="hljs-type">PublicKey</span> <span class="hljs-variable">key</span> <span class="hljs-operator">=</span> keyFactory.generatePublic(<span class="hljs-keyword">new</span> <span class="hljs-title class_">X509EncodedKeySpec</span>(publicKey));<br>        <span class="hljs-comment">//数据加密</span><br>        <span class="hljs-type">Cipher</span> <span class="hljs-variable">cipher</span> <span class="hljs-operator">=</span> Cipher.getInstance(KEY_ALGORITHM);<br>        cipher.init(Cipher.ENCRYPT_MODE, key);<br>        <span class="hljs-keyword">return</span> cipher.doFinal(data);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 公钥加密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data      待加密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> publicKey Base64编码的公钥</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String Base64编码的加密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">encryptByPublicKey</span><span class="hljs-params">(String data, String publicKey)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">byte</span>[] key = Base64.getDecoder().decode(publicKey);<br>        <span class="hljs-keyword">return</span> Base64.getEncoder().encodeToString(encryptByPublicKey(data.getBytes(CHARSET), key));<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 私钥解密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data       待解密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> privateKey 私钥字节数组</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 解密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] decryptByPrivateKey(<span class="hljs-type">byte</span>[] data, <span class="hljs-type">byte</span>[] privateKey) <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">//实例化密钥工厂</span><br>        <span class="hljs-type">KeyFactory</span> <span class="hljs-variable">keyFactory</span> <span class="hljs-operator">=</span> KeyFactory.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//生成私钥</span><br>        <span class="hljs-type">PrivateKey</span> <span class="hljs-variable">key</span> <span class="hljs-operator">=</span> keyFactory.generatePrivate(<span class="hljs-keyword">new</span> <span class="hljs-title class_">PKCS8EncodedKeySpec</span>(privateKey));<br>        <span class="hljs-comment">//数据解密</span><br>        <span class="hljs-type">Cipher</span> <span class="hljs-variable">cipher</span> <span class="hljs-operator">=</span> Cipher.getInstance(KEY_ALGORITHM);<br>        cipher.init(Cipher.DECRYPT_MODE, key);<br>        <span class="hljs-keyword">return</span> cipher.doFinal(data);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 私钥解密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data       Base64编码的待解密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> privateKey Base64编码的私钥</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String 解密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">decryptByPrivateKey</span><span class="hljs-params">(String data, String privateKey)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">byte</span>[] key = Base64.getDecoder().decode(privateKey);<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(decryptByPrivateKey(Base64.getDecoder().decode(data), key), CHARSET);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 公钥解密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data      待解密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> publicKey 公钥字节数组</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> byte[] 解密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-type">byte</span>[] decryptByPublicKey(<span class="hljs-type">byte</span>[] data, <span class="hljs-type">byte</span>[] publicKey) <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-comment">//实例化密钥工厂</span><br>        <span class="hljs-type">KeyFactory</span> <span class="hljs-variable">keyFactory</span> <span class="hljs-operator">=</span> KeyFactory.getInstance(KEY_ALGORITHM);<br>        <span class="hljs-comment">//产生公钥</span><br>        <span class="hljs-type">PublicKey</span> <span class="hljs-variable">key</span> <span class="hljs-operator">=</span> keyFactory.generatePublic(<span class="hljs-keyword">new</span> <span class="hljs-title class_">X509EncodedKeySpec</span>(publicKey));<br>        <span class="hljs-comment">//数据解密</span><br>        <span class="hljs-type">Cipher</span> <span class="hljs-variable">cipher</span> <span class="hljs-operator">=</span> Cipher.getInstance(KEY_ALGORITHM);<br>        cipher.init(Cipher.DECRYPT_MODE, key);<br>        <span class="hljs-keyword">return</span> cipher.doFinal(data);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 公钥解密</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> data      Base64编码的待解密数据</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> publicKey Base64编码的公钥</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span> String 解密数据</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">decryptByPublicKey</span><span class="hljs-params">(String data, String publicKey)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">byte</span>[] key = Base64.getDecoder().decode(publicKey);<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(decryptByPublicKey(Base64.getDecoder().decode(data), key), CHARSET);<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 测试加解密方法</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> args</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> Exception</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>       <span class="hljs-comment">//生成密钥对，一般生成之后可以放到配置文件中</span><br>       <span class="hljs-type">KeyPair</span> <span class="hljs-variable">keyPair</span> <span class="hljs-operator">=</span> RSAUtil.getKeyPair();<br>       <span class="hljs-comment">//公钥</span><br>       <span class="hljs-type">String</span> <span class="hljs-variable">publicKey</span> <span class="hljs-operator">=</span> RSAUtil.getPublicKey(keyPair);<br>       <span class="hljs-comment">//私钥</span><br>       <span class="hljs-type">String</span> <span class="hljs-variable">privateKey</span> <span class="hljs-operator">=</span> RSAUtil.getPrivateKey(keyPair);<br><br>        System.out.println(<span class="hljs-string">&quot;公钥：\n&quot;</span> + publicKey);<br>        System.out.println(<span class="hljs-string">&quot;私钥：\n&quot;</span> + privateKey);<br><br>        <span class="hljs-type">String</span> <span class="hljs-variable">data</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;123321&quot;</span>;<br>        &#123;<br>            System.out.println(<span class="hljs-string">&quot;\n===========私钥加密，公钥解密==============&quot;</span>);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">s1</span> <span class="hljs-operator">=</span> RSAUtil.encryptByPrivateKey(data, privateKey);<br>            System.out.println(<span class="hljs-string">&quot;加密后的数据:&quot;</span> + s1);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">s2</span> <span class="hljs-operator">=</span> RSAUtil.decryptByPublicKey(s1, publicKey);<br>            System.out.println(<span class="hljs-string">&quot;解密后的数据:&quot;</span> + s2 + <span class="hljs-string">&quot;\n\n&quot;</span>);<br>        &#125;<br><br>        &#123;<br>            System.out.println(<span class="hljs-string">&quot;\n===========公钥加密，私钥解密==============&quot;</span>);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">s1</span> <span class="hljs-operator">=</span> RSAUtil.encryptByPublicKey(data, publicKey);<br>            System.out.println(<span class="hljs-string">&quot;加密后的数据:&quot;</span> + s1);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">s2</span> <span class="hljs-operator">=</span> RSAUtil.decryptByPrivateKey(s1, privateKey);<br>            System.out.println(<span class="hljs-string">&quot;解密后的数据:&quot;</span> + s2 + <span class="hljs-string">&quot;\n\n&quot;</span>);<br>        &#125;<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>字段注解</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Target(ElementType.FIELD)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-meta">@Documented</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> RSAField &#123;<br>&#125;<br><br></code></pre></td></tr></table></figure>
@@ -243,37 +319,106 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Target(ElementType.METHOD)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><span class="hljs-comment">//声明此注解生命周期  使用runtime可以在运行时动态获得注解信息</span><br><span class="hljs-meta">@Documented</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> RSAMethod &#123;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>AOP 实现。<br>代理所有加了 RSAMethod 注解的方法，遍历所有参数对象的字段，如果字段有 RSAField 注解，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Component</span><br><span class="hljs-meta">@Aspect</span><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EncryptDecryptAop</span> </span>&#123;<br><br>    <span class="hljs-meta">@Value(&quot;$&#123;privateKey&#125;&quot;)</span><br>    <span class="hljs-keyword">private</span> String privateKey;<br><br>    <span class="hljs-meta">@Pointcut(&quot;@annotation(xx.xx.xx.xx.RSAMethod)&quot;)</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">annotationPointCut</span><span class="hljs-params">()</span> </span>&#123;<br>    &#125;<br><br>    <span class="hljs-meta">@Around(&quot;annotationPointCut()&quot;)</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">doProcess</span><span class="hljs-params">(ProceedingJoinPoint proceedingJoinPoint)</span> <span class="hljs-keyword">throws</span> Throwable </span>&#123;<br>        <span class="hljs-comment">//捕获方法参数列表</span><br>        List&lt;Object&gt; methodArgs = <span class="hljs-keyword">this</span>.getMethodArgs(proceedingJoinPoint);<br>        <span class="hljs-comment">//循环所有参数</span><br>        <span class="hljs-keyword">for</span> (Object item : methodArgs) &#123;<br>            <span class="hljs-comment">//捕获参数类中的所有字段</span><br>            Field[] fields = item.getClass().getDeclaredFields();<br>            <span class="hljs-comment">//遍历所有字段</span><br>            <span class="hljs-keyword">for</span> (Field field : fields) &#123;<br>                <span class="hljs-comment">//若该字段被EncryptField注解,则进行加密</span><br>                <span class="hljs-keyword">if</span> (<span class="hljs-keyword">null</span> != AnnotationUtils.findAnnotation(field, RSAField.class)) &#123;<br>                    String raw = <span class="hljs-keyword">null</span>;<br>                    <span class="hljs-keyword">try</span> &#123;<br>                        <span class="hljs-comment">//设置private类型允许访问</span><br>                        field.setAccessible(Boolean.TRUE);<br>                        raw = field.get(item).toString();<br>                    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                        <span class="hljs-keyword">continue</span>;<br>                    &#125;<br>                    <span class="hljs-keyword">if</span> (raw == <span class="hljs-keyword">null</span> || raw.isEmpty()) &#123;<br>                        <span class="hljs-keyword">continue</span>;<br>                    &#125;<br><span class="hljs-comment">//                    log.info(&quot;&#123;&#125;解密前&#123;&#125;&quot;, field.getName(), raw);</span><br>                    String decrypt = <span class="hljs-keyword">null</span>;<br>                    <span class="hljs-keyword">try</span> &#123;<br>                        <span class="hljs-comment">//解密</span><br>                        decrypt = RSAUtil.decryptByPrivateKey(raw, privateKey);<br>                    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                        log.warn(<span class="hljs-string">&quot;RAS解密失败&#123;&#125;&quot;</span>, field.getName());<br>                        <span class="hljs-comment">// throw new ServiceException(ErrorEnums.PARAM_ERROR.getCode(), &quot;加密解密失败&quot;);</span><br>                    &#125;<br>                    field.set(item, decrypt);<br><span class="hljs-comment">//                    log.info(&quot;&#123;&#125;解密后&#123;&#125;&quot;, field.getName(), field.get(item).toString());</span><br>                    field.setAccessible(Boolean.FALSE);<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> proceedingJoinPoint.proceed();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取方法请求参数</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> List&lt;Object&gt; <span class="hljs-title">getMethodArgs</span><span class="hljs-params">(ProceedingJoinPoint proceedingJoinPoint)</span> </span>&#123;<br>        List&lt;Object&gt; methodArgs = Lists.newArrayList();<br>        <span class="hljs-keyword">for</span> (Object arg : proceedingJoinPoint.getArgs()) &#123;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">null</span> != arg) &#123;<br>                methodArgs.add(arg);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> methodArgs;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Component</span><br><span class="hljs-meta">@Aspect</span><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">EncryptDecryptAop</span> &#123;<br><br>    <span class="hljs-meta">@Value(&quot;$&#123;privateKey&#125;&quot;)</span><br>    <span class="hljs-keyword">private</span> String privateKey;<br><br>    <span class="hljs-meta">@Pointcut(&quot;@annotation(xx.xx.xx.xx.RSAMethod)&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">annotationPointCut</span><span class="hljs-params">()</span> &#123;<br>    &#125;<br><br>    <span class="hljs-meta">@Around(&quot;annotationPointCut()&quot;)</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">doProcess</span><span class="hljs-params">(ProceedingJoinPoint proceedingJoinPoint)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        <span class="hljs-comment">//捕获方法参数列表</span><br>        List&lt;Object&gt; methodArgs = <span class="hljs-built_in">this</span>.getMethodArgs(proceedingJoinPoint);<br>        <span class="hljs-comment">//循环所有参数</span><br>        <span class="hljs-keyword">for</span> (Object item : methodArgs) &#123;<br>            <span class="hljs-comment">//捕获参数类中的所有字段</span><br>            Field[] fields = item.getClass().getDeclaredFields();<br>            <span class="hljs-comment">//遍历所有字段</span><br>            <span class="hljs-keyword">for</span> (Field field : fields) &#123;<br>                <span class="hljs-comment">//若该字段被EncryptField注解,则进行加密</span><br>                <span class="hljs-keyword">if</span> (<span class="hljs-literal">null</span> != AnnotationUtils.findAnnotation(field, RSAField.class)) &#123;<br>                    <span class="hljs-type">String</span> <span class="hljs-variable">raw</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>                    <span class="hljs-keyword">try</span> &#123;<br>                        <span class="hljs-comment">//设置private类型允许访问</span><br>                        field.setAccessible(Boolean.TRUE);<br>                        raw = field.get(item).toString();<br>                    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                        <span class="hljs-keyword">continue</span>;<br>                    &#125;<br>                    <span class="hljs-keyword">if</span> (raw == <span class="hljs-literal">null</span> || raw.isEmpty()) &#123;<br>                        <span class="hljs-keyword">continue</span>;<br>                    &#125;<br><span class="hljs-comment">//                    log.info(&quot;&#123;&#125;解密前&#123;&#125;&quot;, field.getName(), raw);</span><br>                    <span class="hljs-type">String</span> <span class="hljs-variable">decrypt</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>                    <span class="hljs-keyword">try</span> &#123;<br>                        <span class="hljs-comment">//解密</span><br>                        decrypt = RSAUtil.decryptByPrivateKey(raw, privateKey);<br>                    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                        log.warn(<span class="hljs-string">&quot;RAS解密失败&#123;&#125;&quot;</span>, field.getName());<br>                        <span class="hljs-comment">// throw new ServiceException(ErrorEnums.PARAM_ERROR.getCode(), &quot;加密解密失败&quot;);</span><br>                    &#125;<br>                    field.set(item, decrypt);<br><span class="hljs-comment">//                    log.info(&quot;&#123;&#125;解密后&#123;&#125;&quot;, field.getName(), field.get(item).toString());</span><br>                    field.setAccessible(Boolean.FALSE);<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> proceedingJoinPoint.proceed();<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取方法请求参数</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> List&lt;Object&gt; <span class="hljs-title function_">getMethodArgs</span><span class="hljs-params">(ProceedingJoinPoint proceedingJoinPoint)</span> &#123;<br>        List&lt;Object&gt; methodArgs = Lists.newArrayList();<br>        <span class="hljs-keyword">for</span> (Object arg : proceedingJoinPoint.getArgs()) &#123;<br>            <span class="hljs-keyword">if</span> (<span class="hljs-literal">null</span> != arg) &#123;<br>                methodArgs.add(arg);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> methodArgs;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
-            </div>
-            <hr>
-            <div>
-              <div class="post-metas mb-3">
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/java/">java</a>
-                    
-                  </div>
                 
               </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" class="category-chain-item">后端开发</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+        <a href="/tags/AOP/" class="print-no-link">#AOP</a>
+      
+        <a href="/tags/RSA%E5%8A%A0%E5%AF%86/" class="print-no-link">#RSA加密</a>
+      
+        <a href="/tags/%E5%AE%89%E5%85%A8/" class="print-no-link">#安全</a>
+      
+    </div>
+  
+</div>
+
+
               
-                <p class="note note-warning">
-                  
-                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
-                  
-                </p>
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>注解实现字段自动解密</div>
+      <div>http://yoursite.com/2020/07/10/注解实现字段自动解密/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>relengxing</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年7月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
               
               
-                <div class="post-prevnext">
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/16/redis-bitmap%E7%BF%BB%E8%BD%A6%E7%9A%84%E8%AE%B0%E5%BD%95/">
+                      <a href="/2020/09/16/redis-bitmap%E7%BF%BB%E8%BD%A6%E7%9A%84%E8%AE%B0%E5%BD%95/" title="Redis Bitmap翻车的记录">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">redis_bitmap翻车的记录.md</span>
+                        <span class="hidden-mobile">Redis Bitmap翻车的记录</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -281,8 +426,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/07/06/let&#39;s%20encrypt%20%E8%AF%81%E4%B9%A6/">
-                        <span class="hidden-mobile">let's encrypt 证书</span>
+                      <a href="/2020/07/06/let&#39;s%20encrypt%20%E8%AF%81%E4%B9%A6/" title="Let&#39;s Encrypt 证书">
+                        <span class="hidden-mobile">Let&#39;s Encrypt 证书</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -297,25 +442,59 @@
         </div>
       </div>
     </div>
-    
-      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
-        <div id="toc">
-  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
   <div class="toc-body" id="toc-body"></div>
 </div>
 
-      </div>
-    
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-<!-- Custom -->
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
 
 
     
 
     
-      <a id="scroll-top-button" href="#" role="button">
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
         <i class="iconfont icon-arrowup" aria-hidden="true"></i>
       </a>
     
@@ -334,32 +513,29 @@
       <div class="modal-body mx-3">
         <div class="md-form mb-5">
           <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v"
-                 for="local-search-input">关键词</label>
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
         </div>
         <div class="list-group" id="local-search-result"></div>
       </div>
     </div>
   </div>
 </div>
+
     
 
     
   </main>
 
-  <footer class="text-center mt-5 py-3">
-  <div class="footer-content">
-    
-  </div>
+  <footer>
+    <div class="footer-inner">
   
-
   
-
   
-</footer>
+</div>
 
+  </footer>
 
-  <!-- SCRIPTS -->
+  <!-- Scripts -->
   
   <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
@@ -378,7 +554,23 @@
 <script  src="/js/events.js" ></script>
 <script  src="/js/plugins.js" ></script>
 
-<!-- Plugins -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
 
 
   
@@ -387,25 +579,99 @@
 
 
 
+
   
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
 
 
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
 
-  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
-
-
-
-  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+  <script>Fluid.plugins.codeWidget();</script>
 
 
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
 
-  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
 
 
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
 
-  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
 
-
+  <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
 
@@ -413,35 +679,15 @@
 
 
 
-
-  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var title = document.getElementById('subtitle').title;
-      
-      typing(title)
-      
-    })(window, document);
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 主题的启动项 保持在最底部 -->
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
 <script  src="/js/boot.js" ></script>
 
 
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
 </html>

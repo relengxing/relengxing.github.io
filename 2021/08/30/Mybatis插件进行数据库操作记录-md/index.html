@@ -1,48 +1,59 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+<html lang="zh-CN" data-default-color-scheme=auto>
 
 
 
 <head>
   <meta charset="UTF-8">
+
   <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
   <link rel="icon" href="/img/favicon.png">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Mybatis插件进行数据库操作记录需求介绍先介绍一下需求，我们需要对用户的一些操作进行记录，比如那个用户修改了商户的一些设置，或者修改了手续费率等。">
   <meta name="author" content="relengxing">
   <meta name="keywords" content="">
   
-  <title>Mybatis插件进行数据库操作记录.md - relengxing blog</title>
+    <meta name="description" content="Mybatis插件进行数据库操作记录需求介绍先介绍一下需求，我们需要对用户的一些操作进行记录，比如那个用户修改了商户的一些设置，或者修改了手续费率等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis插件进行数据库操作记录">
+<meta property="og:url" content="http://yoursite.com/2021/08/30/Mybatis%E6%8F%92%E4%BB%B6%E8%BF%9B%E8%A1%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95-md/index.html">
+<meta property="og:site_name" content="relengxing blog">
+<meta property="og:description" content="Mybatis插件进行数据库操作记录需求介绍先介绍一下需求，我们需要对用户的一些操作进行记录，比如那个用户修改了商户的一些设置，或者修改了手续费率等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-30T16:05:40.000Z">
+<meta property="article:modified_time" content="2026-01-20T15:22:55.837Z">
+<meta property="article:author" content="relengxing">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="MyBatis">
+<meta property="article:tag" content="审计日志">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Mybatis插件进行数据库操作记录 - relengxing blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
 
+
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+
   <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
 
-  
-    
-    
-      
-      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
-    
-  
-
-  
-    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
-  
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
 
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
 
 
 
@@ -51,24 +62,70 @@
 
 <link  rel="stylesheet" href="/css/main.css" />
 
-<!-- 自定义样式保持在最底部 -->
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
 
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
-    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"YOUR_BAIDU_KEY","google":null,"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null},"gtag":null,"woyaola":null,"cnzz":null},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
   </script>
   <script  src="/js/utils.js" ></script>
   <script  src="/js/color-schema.js" ></script>
-<meta name="generator" content="Hexo 5.4.0"></head>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?YOUR_BAIDU_KEY";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 
 <body>
-  <header style="height: 70vh;">
-    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
-    <a class="navbar-brand"
-       href="/">&nbsp;<strong>relengxing</strong>&nbsp;</a>
+    <a class="navbar-brand" href="/">
+      <strong>relengxing</strong>
+    </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -85,9 +142,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/">
+              <a class="nav-link" href="/" target="_self">
                 <i class="iconfont icon-home-fill"></i>
-                首页
+                <span>首页</span>
               </a>
             </li>
           
@@ -97,9 +154,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/archives/">
+              <a class="nav-link" href="/archives/" target="_self">
                 <i class="iconfont icon-archive-fill"></i>
-                归档
+                <span>归档</span>
               </a>
             </li>
           
@@ -109,9 +166,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/categories/">
+              <a class="nav-link" href="/categories/" target="_self">
                 <i class="iconfont icon-category-fill"></i>
-                分类
+                <span>分类</span>
               </a>
             </li>
           
@@ -121,9 +178,9 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/tags/">
+              <a class="nav-link" href="/tags/" target="_self">
                 <i class="iconfont icon-tags-fill"></i>
-                标签
+                <span>标签</span>
               </a>
             </li>
           
@@ -133,23 +190,26 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/about/">
+              <a class="nav-link" href="/about/" target="_self">
                 <i class="iconfont icon-user-fill"></i>
-                关于
+                <span>关于</span>
               </a>
             </li>
           
         
         
           <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
-                class="iconfont icon-search"></i>&nbsp;</a>
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
           </li>
+          
         
         
           <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self">&nbsp;<i
-                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
           </li>
         
       </ul>
@@ -157,60 +217,71 @@
   </div>
 </nav>
 
-    <div class="banner" id="banner" parallax=true
-         style="background: url('/img/default.png') no-repeat center center;
-           background-size: cover;">
-      <div class="full-bg-img">
-        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-          <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Mybatis插件进行数据库操作记录.md">
-              
-            </span>
-
-            
-              <div class="mt-3">
-  
-  
-    <span class="post-meta">
-      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-08-30 16:05" pubdate>
-        2021年8月30日 下午
-      </time>
-    </span>
-  
-</div>
-
-<div class="mt-1">
-  
-    
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-chart"></i>
-      2.8k 字
-    </span>
   
 
-  
-    
-    <span class="post-meta mr-2">
-      <i class="iconfont icon-clock-fill"></i>
-      
-      
-      42
-       分钟
-    </span>
-  
-
-  
-  
-</div>
-
-            
-          </div>
-
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Mybatis插件进行数据库操作记录"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-30 16:05" pubdate>
+          2021年8月30日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          2.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
       </div>
+
+      
     </div>
+  </div>
+</div>
+
+</div>
+
   </header>
 
   <main>
@@ -219,16 +290,21 @@
 
 <div class="container-fluid nopadding-x">
   <div class="row nomargin-x">
-    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
     <div class="col-lg-8 nopadding-x-md">
       <div class="container nopadding-x-md" id="board-ctn">
-        <div class="py-5" id="board">
+        <div id="board">
           <article class="post-content mx-auto">
-            <!-- SEO header -->
-            <h1 style="display: none">Mybatis插件进行数据库操作记录.md</h1>
+            <h1 id="seo-header">Mybatis插件进行数据库操作记录</h1>
             
-            <div class="markdown-body">
-              <h1 id="Mybatis插件进行数据库操作记录"><a href="#Mybatis插件进行数据库操作记录" class="headerlink" title="Mybatis插件进行数据库操作记录"></a>Mybatis插件进行数据库操作记录</h1><h2 id="需求介绍"><a href="#需求介绍" class="headerlink" title="需求介绍"></a>需求介绍</h2><p>先介绍一下需求，<br>我们需要对用户的一些操作进行记录，比如那个用户修改了商户的一些设置，或者修改了手续费率等。</p>
+            
+              <div class="markdown-body">
+                
+                <h1 id="Mybatis插件进行数据库操作记录"><a href="#Mybatis插件进行数据库操作记录" class="headerlink" title="Mybatis插件进行数据库操作记录"></a>Mybatis插件进行数据库操作记录</h1><h2 id="需求介绍"><a href="#需求介绍" class="headerlink" title="需求介绍"></a>需求介绍</h2><p>先介绍一下需求，<br>我们需要对用户的一些操作进行记录，比如那个用户修改了商户的一些设置，或者修改了手续费率等。</p>
 <span id="more"></span>
 <p>那么我们很自然的想到，可以使用 AOP 对可能产生修改的地方进行拦截，获取前后参数然后再入库。但是这样需要知道有哪些地方会做出哪些修改，还需要在方法上加注解。</p>
 <p>这里使用 Mybatis Plugin 来做操作记录。</p>
@@ -236,7 +312,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Intercepts(&#123;</span><br><span class="hljs-meta">        @Signature(method = &quot;update&quot;, type = Executor.class, args = &#123;MappedStatement.class, Object.class&#125;),</span><br><span class="hljs-meta">        @Signature(method = &quot;update&quot;, type = StatementHandler.class, args = &#123;Statement.class&#125;),</span><br><span class="hljs-meta">        @Signature(type=StatementHandler.class,method=&quot;prepare&quot;,args=&#123;Connection.class&#125;)</span><br><span class="hljs-meta">&#125;)</span><br><span class="hljs-meta">@Intercepts(&#123;</span><br><span class="hljs-meta">        @Signature(type = StatementHandler.class, method = &quot;update&quot;, args = &#123;Statement.class&#125;)</span><br><span class="hljs-meta">&#125;)</span><br></code></pre></td></tr></table></figure>
 <p>这里不做详细介绍，参考文章如下<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/fangjian0423/p/mybatis-interceptor.html">Mybatis interceptor 参考文章</a></p>
 <h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>下面先贴一下代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-meta">@Intercepts(&#123;</span><br><span class="hljs-meta">        @Signature(type = StatementHandler.class, method = &quot;update&quot;, args = &#123;Statement.class&#125;)</span><br><span class="hljs-meta">&#125;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OperationLogPlugin</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Interceptor</span> </span>&#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 监控列表</span><br><span class="hljs-comment">     * 监控以下表的修改语句，写入redis中</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Set&lt;String&gt; MONITOR_TABLE = <span class="hljs-keyword">new</span> HashSet&lt;&gt;();<br><br>    <span class="hljs-keyword">static</span> &#123;<br>        String[] table = &#123;<br>                <span class="hljs-string">&quot;agency_merchant&quot;</span>,<br>                <span class="hljs-string">&quot;pay_merchantChannel&quot;</span>,<br>                <span class="hljs-string">&quot;agency_merchantSettle&quot;</span>,<br>                <span class="hljs-string">&quot;agency_vendor&quot;</span>,<br>                <span class="hljs-string">&quot;agency_merchantWechat&quot;</span>,<br>                <span class="hljs-string">&quot;agency_outlet&quot;</span><br>        &#125;;<br>        <span class="hljs-keyword">for</span> (String s : table) &#123;<br>            MONITOR_TABLE.add(s.toLowerCase());<br>        &#125;<br>    &#125;<br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">intercept</span><span class="hljs-params">(Invocation invocation)</span> <span class="hljs-keyword">throws</span> Throwable </span>&#123;<br>        BoundSql boundSql = <span class="hljs-keyword">null</span>;<br>        StatementHandler statementHandler;<br>        <span class="hljs-keyword">if</span> (invocation.getTarget() <span class="hljs-keyword">instanceof</span> StatementHandler) &#123;<br>            statementHandler = (StatementHandler) invocation.getTarget();<br>            boundSql = statementHandler.getBoundSql();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125;<br><br>        Object[] args = invocation.getArgs();<br>        Statement statement = (Statement) args[<span class="hljs-number">0</span>];<br><br>        String preSql = boundSql.getSql();<br>        MySqlStatementParser mySqlStatementParser = <span class="hljs-keyword">new</span> MySqlStatementParser(preSql);<br>        SQLStatement sqlStatement = mySqlStatementParser.parseStatement();<br>        SQLExprTableSource sqlTableSource = <span class="hljs-keyword">null</span>;<br>        SQLExpr where = <span class="hljs-keyword">null</span>;<br>        <span class="hljs-comment">// 获取 SQL 的 表名 以及 where 条件。仅处理Update语句，其他情况直接执行原SQL</span><br>        <span class="hljs-keyword">if</span> (sqlStatement <span class="hljs-keyword">instanceof</span> SQLSelectStatement) &#123;<br>            <span class="hljs-comment">// 查询语句不做任何处理，直接结束</span><br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (sqlStatement <span class="hljs-keyword">instanceof</span> SQLInsertStatement) &#123;<br><span class="hljs-comment">//            SQLInsertStatement sqlInsertStatement = (SQLInsertStatement) sqlStatement;</span><br><span class="hljs-comment">//            sqlTableSource = sqlInsertStatement.getTableSource();</span><br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (sqlStatement <span class="hljs-keyword">instanceof</span> SQLUpdateStatement) &#123;<br>            SQLUpdateStatement sqlUpdateStatement = (SQLUpdateStatement) sqlStatement;<br>            sqlTableSource = (SQLExprTableSource) sqlUpdateStatement.getTableSource();<br>            where = sqlUpdateStatement.getWhere();<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (sqlStatement <span class="hljs-keyword">instanceof</span> SQLDeleteStatement) &#123;<br><span class="hljs-comment">//            SQLDeleteStatement sqlDeleteStatement = (SQLDeleteStatement) sqlStatement;</span><br><span class="hljs-comment">//            sqlTableSource = (SQLExprTableSource) sqlDeleteStatement.getTableSource();</span><br><span class="hljs-comment">//            where = sqlDeleteStatement.getWhere();</span><br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125;<br>        String tableName = sqlTableSource.toString();<br>        <span class="hljs-comment">// where 条件为空，说明是一个批量修改，直接执行，不记录。这种情况记录SQL最好</span><br>        <span class="hljs-keyword">if</span> (where == <span class="hljs-keyword">null</span>) &#123;<br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125;<br>        <span class="hljs-comment">// 获取 Connection</span><br>        Connection connection = statement.getConnection();<br>        <span class="hljs-comment">// Update影响的主键</span><br>        Long id = <span class="hljs-number">0L</span>;<br>        List&lt;Map&lt;String, Object&gt;&gt; beforeImage;<br>        List&lt;Map&lt;String, Object&gt;&gt; afterImage;<br>        <span class="hljs-keyword">if</span> (MONITOR_TABLE.contains(tableName.toLowerCase())) &#123;<br>            <span class="hljs-comment">// 查询前镜像</span><br>            String beforeImagePreSql = String.format(<span class="hljs-string">&quot;SELECT * FROM %s where %s&quot;</span>, tableName, where.toString());<br>            RoutingStatementHandler routingStatementHandler = (RoutingStatementHandler) getJdkDynamicProxyTargetObject(statementHandler);<br>            StatementHandler delegate = (StatementHandler) ReflectUtil.getFieldValue(routingStatementHandler, <span class="hljs-string">&quot;delegate&quot;</span>);<br>            <span class="hljs-comment">//获取mapper方法与xml的映射信息</span><br>            MappedStatement mappedStatement = (MappedStatement) ReflectUtil.getFieldValue(delegate, <span class="hljs-string">&quot;mappedStatement&quot;</span>);<br>            List&lt;ParameterMapping&gt; parameterMappings = boundSql.getParameterMappings();<br>            Object parameterObject = boundSql.getParameterObject();<br>            List&lt;SQLObject&gt; children = where.getChildren();<br>            <span class="hljs-keyword">int</span> whereConditionCount = getWhereConditionCount(children, <span class="hljs-number">0</span>);<br>            List&lt;ParameterMapping&gt; newParameterMapping = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(parameterMappings.size());<br>            <span class="hljs-comment">// Where语句一般都在最后，所以根据 whereConditionCount 取最后几个参数</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = parameterMappings.size() - whereConditionCount; i &lt; parameterMappings.size(); i++) &#123;<br>                newParameterMapping.add(parameterMappings.get(i));<br>            &#125;<br>            BoundSql beforeImageBoundSql = <span class="hljs-keyword">new</span> BoundSql(mappedStatement.getConfiguration(), beforeImagePreSql, newParameterMapping, parameterObject);<br>            <span class="hljs-comment">//StatementHandler、ResultSetHandler、ParameterHandler运行在这几个中插入自己的代码</span><br>            ParameterHandler parameterHandler = <span class="hljs-keyword">new</span> DefaultParameterHandler(mappedStatement, parameterObject, beforeImageBoundSql);<br>            <span class="hljs-comment">//创建一个 PreparedStatement 对象来将参数化的 SQL 语句发送到数据库。</span><br>            PreparedStatement prepareStatement = connection.prepareStatement(beforeImagePreSql);<br>            parameterHandler.setParameters(prepareStatement);<br>            ResultSet rs = prepareStatement.executeQuery();<br>            beforeImage = convertList(rs);<br>            id = (Long) beforeImage.get(<span class="hljs-number">0</span>).get(<span class="hljs-string">&quot;id&quot;</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 不需要监控的表直接结束</span><br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125;<br>        Object proceed = invocation.proceed();<br>        <span class="hljs-keyword">if</span> (beforeImage.size() == <span class="hljs-number">1</span>) &#123;<br>            <span class="hljs-comment">// 只在更新数据为一条记录时记录日志。已经可以满足绝大部分业务需求了。</span><br>            <span class="hljs-comment">// 查询新数据，此时使用主键查询</span><br>            String afterImageSql = String.format(<span class="hljs-string">&quot;SELECT * from %s where id = %s&quot;</span>, tableName, id);<br>            PreparedStatement prepareStatement = connection.prepareStatement(afterImageSql);<br>            ResultSet rs = prepareStatement.executeQuery();<br>            afterImage = convertList(rs);<br>            <span class="hljs-comment">// 新旧数据对比</span><br>            List&lt;Map&lt;String, Object&gt;&gt; difference = difference(beforeImage.get(<span class="hljs-number">0</span>), afterImage.get(<span class="hljs-number">0</span>));<br><span class="hljs-comment">//            System.out.println(difference);</span><br>            <span class="hljs-comment">// 获取用户信息</span><br>            AuthenticationDto authentication = <span class="hljs-keyword">null</span>;<br>            <span class="hljs-keyword">try</span> &#123;<br>                AuthUtil bean = SpringUtil.getBean(AuthUtil.class);<br>                authentication = bean.getAuthentication();<br>            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                log.warn(<span class="hljs-string">&quot;获取用户信息失败&quot;</span>);<br>            &#125;<br><br>            String userId = authentication == <span class="hljs-keyword">null</span> ? <span class="hljs-string">&quot;&quot;</span> : String.valueOf(authentication.getUserId());<br>            String merchantId = authentication == <span class="hljs-keyword">null</span> ? <span class="hljs-string">&quot;&quot;</span> : String.valueOf(authentication.getMerchantId());<br><br>            <span class="hljs-comment">// 插入 opreation_log</span><br>            String operationLogSQL = <span class="hljs-string">&quot;INSERT INTO `pay_1`.`operation_log`(`uid`, `merchantId`, `tableName`, `operationCode`, `primaryKey`, `oriValue`, `newValue`, `recordTime`)&quot;</span> +<br>                    <span class="hljs-string">&quot;VALUES(?, ?, ?, ?, ?, ?, ?, ?);&quot;</span>;<br>            PreparedStatement operationLogStatement = connection.prepareStatement(operationLogSQL); <span class="hljs-comment">//创建一个 PreparedStatement 对象来将参数化的 SQL 语句发送到数据库。</span><br>            <span class="hljs-comment">// uid</span><br>            operationLogStatement.setString(<span class="hljs-number">1</span>, userId);<br>            <span class="hljs-comment">// merchantId</span><br>            operationLogStatement.setString(<span class="hljs-number">2</span>, merchantId);<br>            <span class="hljs-comment">//tableName</span><br>            operationLogStatement.setString(<span class="hljs-number">3</span>, tableName);<br>            <span class="hljs-comment">//operationCode</span><br>            operationLogStatement.setString(<span class="hljs-number">4</span>, <span class="hljs-string">&quot;UPDATE&quot;</span>);<br>            <span class="hljs-comment">//primaryKey</span><br>            operationLogStatement.setString(<span class="hljs-number">5</span>, String.valueOf(id));<br>            <span class="hljs-comment">//oriValue</span><br>            operationLogStatement.setString(<span class="hljs-number">6</span>, JsonUtil.entity2Json(difference.get(<span class="hljs-number">0</span>)));<br>            <span class="hljs-comment">//newValue</span><br>            operationLogStatement.setString(<span class="hljs-number">7</span>, JsonUtil.entity2Json(difference.get(<span class="hljs-number">1</span>)));<br>            <span class="hljs-comment">//recordTime</span><br>            operationLogStatement.setInt(<span class="hljs-number">8</span>, TimeUtil.getNow());<br>            operationLogStatement.execute();<br>        &#125;<br>        <span class="hljs-keyword">return</span> proceed;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">plugin</span><span class="hljs-params">(Object target)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (target <span class="hljs-keyword">instanceof</span> StatementHandler) &#123;<br>            <span class="hljs-keyword">return</span> Plugin.wrap(target, <span class="hljs-keyword">this</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> target;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setProperties</span><span class="hljs-params">(Properties properties)</span> </span>&#123;<br>        Interceptor.<span class="hljs-keyword">super</span>.setProperties(properties);<br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取JDK动态代理的被代理对象</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> proxy</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> Exception</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title">getJdkDynamicProxyTargetObject</span><span class="hljs-params">(Object proxy)</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;<br>        Field field = proxy.getClass().getSuperclass().getDeclaredField(<span class="hljs-string">&quot;h&quot;</span>);<br>        field.setAccessible(<span class="hljs-keyword">true</span>);<br>        <span class="hljs-comment">//获取指定对象中此字段的值</span><br>        Plugin pluginProxy = (Plugin) field.get(proxy); <span class="hljs-comment">//获取Proxy对象中的此字段的值</span><br>        Field target = pluginProxy.getClass().getDeclaredField(<span class="hljs-string">&quot;target&quot;</span>);<br>        target.setAccessible(<span class="hljs-keyword">true</span>);<br>        <span class="hljs-keyword">return</span> target.get(pluginProxy);<br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 解析where条件抽象语法树，获取where条件数量</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> listCommon</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> sum</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getWhereConditionCount</span><span class="hljs-params">(List&lt;SQLObject&gt; listCommon, <span class="hljs-keyword">int</span> sum)</span> </span>&#123;<br>        <span class="hljs-keyword">for</span> (SQLObject sqlObject : listCommon) &#123;<br>            <span class="hljs-keyword">if</span> (sqlObject <span class="hljs-keyword">instanceof</span> SQLBinaryOpExpr) &#123;<br>                SQLBinaryOpExpr sqlObject1 = (SQLBinaryOpExpr) sqlObject;<br>                List&lt;SQLObject&gt; chList = sqlObject1.getChildren();<br>                sum = getWhereConditionCount(chList, sum);<br>            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (sqlObject <span class="hljs-keyword">instanceof</span> SQLIdentifierExpr) &#123;<br>                sum += <span class="hljs-number">1</span>;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> sum;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * MYSQL结果集转对象</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> rs</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> List&lt;Map&lt;String, Object&gt;&gt; convertList(ResultSet rs) &#123;<br>        List&lt;Map&lt;String, Object&gt;&gt; list = <span class="hljs-keyword">new</span> ArrayList&lt;Map&lt;String, Object&gt;&gt;();<br>        <span class="hljs-keyword">try</span> &#123;<br>            ResultSetMetaData md = rs.getMetaData();<br>            <span class="hljs-keyword">int</span> columnCount = md.getColumnCount();<br>            <span class="hljs-keyword">while</span> (rs.next()) &#123;<br>                Map&lt;String, Object&gt; rowData = <span class="hljs-keyword">new</span> HashMap&lt;String, Object&gt;();<br>                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= columnCount; i++) &#123;<br>                    Object object = rs.getObject(i);<br>                    <span class="hljs-keyword">if</span> (object <span class="hljs-keyword">instanceof</span> BigInteger) &#123;<br>                        rowData.put(md.getColumnName(i), ((BigInteger) object).longValue());<br>                    &#125; <span class="hljs-keyword">else</span> &#123;<br>                        rowData.put(md.getColumnName(i), object);<br>                    &#125;<br>                &#125;<br>                list.add(rowData);<br>            &#125;<br>        &#125; <span class="hljs-keyword">catch</span> (SQLException e) &#123;<br>            <span class="hljs-comment">// Auto-generated catch block</span><br>            e.printStackTrace();<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-keyword">if</span> (rs != <span class="hljs-keyword">null</span>) &#123;<br>                    rs.close();<br>                &#125;<br>                rs = <span class="hljs-keyword">null</span>;<br>            &#125; <span class="hljs-keyword">catch</span> (SQLException e) &#123;<br>                e.printStackTrace();<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> list;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 结果集对比</span><br><span class="hljs-comment">     * 返回一个List map</span><br><span class="hljs-comment">     * List.get(0) 存储前镜像</span><br><span class="hljs-comment">     * List.get(1) 存储后镜像</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> beforeImage</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> afterImage</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> List&lt;Map&lt;String, Object&gt;&gt; difference(Map&lt;String, Object&gt; beforeImage, Map&lt;String, Object&gt; afterImage) &#123;<br>        List&lt;Map&lt;String, Object&gt;&gt; result = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();<br>        result.add(<span class="hljs-keyword">new</span> HashMap&lt;&gt;());<br>        result.add(<span class="hljs-keyword">new</span> HashMap&lt;&gt;());<br>        <span class="hljs-keyword">for</span> (Map.Entry&lt;String, Object&gt; beforeEntry : beforeImage.entrySet()) &#123;<br>            String key = beforeEntry.getKey();<br>            Object beforeValue = beforeEntry.getValue();<br>            Object afterValue = afterImage.get(key);<br>            <span class="hljs-keyword">if</span> (!Objects.equals(beforeValue, afterValue)) &#123;<br>                result.get(<span class="hljs-number">0</span>).put(key, beforeValue);<br>                result.get(<span class="hljs-number">1</span>).put(key, afterValue);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-meta">@Intercepts(&#123;</span><br><span class="hljs-meta">        @Signature(type = StatementHandler.class, method = &quot;update&quot;, args = &#123;Statement.class&#125;)</span><br><span class="hljs-meta">&#125;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OperationLogPlugin</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Interceptor</span> &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 监控列表</span><br><span class="hljs-comment">     * 监控以下表的修改语句，写入redis中</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Set&lt;String&gt; MONITOR_TABLE = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashSet</span>&lt;&gt;();<br><br>    <span class="hljs-keyword">static</span> &#123;<br>        String[] table = &#123;<br>                <span class="hljs-string">&quot;agency_merchant&quot;</span>,<br>                <span class="hljs-string">&quot;pay_merchantChannel&quot;</span>,<br>                <span class="hljs-string">&quot;agency_merchantSettle&quot;</span>,<br>                <span class="hljs-string">&quot;agency_vendor&quot;</span>,<br>                <span class="hljs-string">&quot;agency_merchantWechat&quot;</span>,<br>                <span class="hljs-string">&quot;agency_outlet&quot;</span><br>        &#125;;<br>        <span class="hljs-keyword">for</span> (String s : table) &#123;<br>            MONITOR_TABLE.add(s.toLowerCase());<br>        &#125;<br>    &#125;<br><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">intercept</span><span class="hljs-params">(Invocation invocation)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        <span class="hljs-type">BoundSql</span> <span class="hljs-variable">boundSql</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>        StatementHandler statementHandler;<br>        <span class="hljs-keyword">if</span> (invocation.getTarget() <span class="hljs-keyword">instanceof</span> StatementHandler) &#123;<br>            statementHandler = (StatementHandler) invocation.getTarget();<br>            boundSql = statementHandler.getBoundSql();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125;<br><br>        Object[] args = invocation.getArgs();<br>        <span class="hljs-type">Statement</span> <span class="hljs-variable">statement</span> <span class="hljs-operator">=</span> (Statement) args[<span class="hljs-number">0</span>];<br><br>        <span class="hljs-type">String</span> <span class="hljs-variable">preSql</span> <span class="hljs-operator">=</span> boundSql.getSql();<br>        <span class="hljs-type">MySqlStatementParser</span> <span class="hljs-variable">mySqlStatementParser</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MySqlStatementParser</span>(preSql);<br>        <span class="hljs-type">SQLStatement</span> <span class="hljs-variable">sqlStatement</span> <span class="hljs-operator">=</span> mySqlStatementParser.parseStatement();<br>        <span class="hljs-type">SQLExprTableSource</span> <span class="hljs-variable">sqlTableSource</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>        <span class="hljs-type">SQLExpr</span> <span class="hljs-variable">where</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>        <span class="hljs-comment">// 获取 SQL 的 表名 以及 where 条件。仅处理Update语句，其他情况直接执行原SQL</span><br>        <span class="hljs-keyword">if</span> (sqlStatement <span class="hljs-keyword">instanceof</span> SQLSelectStatement) &#123;<br>            <span class="hljs-comment">// 查询语句不做任何处理，直接结束</span><br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (sqlStatement <span class="hljs-keyword">instanceof</span> SQLInsertStatement) &#123;<br><span class="hljs-comment">//            SQLInsertStatement sqlInsertStatement = (SQLInsertStatement) sqlStatement;</span><br><span class="hljs-comment">//            sqlTableSource = sqlInsertStatement.getTableSource();</span><br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (sqlStatement <span class="hljs-keyword">instanceof</span> SQLUpdateStatement) &#123;<br>            <span class="hljs-type">SQLUpdateStatement</span> <span class="hljs-variable">sqlUpdateStatement</span> <span class="hljs-operator">=</span> (SQLUpdateStatement) sqlStatement;<br>            sqlTableSource = (SQLExprTableSource) sqlUpdateStatement.getTableSource();<br>            where = sqlUpdateStatement.getWhere();<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (sqlStatement <span class="hljs-keyword">instanceof</span> SQLDeleteStatement) &#123;<br><span class="hljs-comment">//            SQLDeleteStatement sqlDeleteStatement = (SQLDeleteStatement) sqlStatement;</span><br><span class="hljs-comment">//            sqlTableSource = (SQLExprTableSource) sqlDeleteStatement.getTableSource();</span><br><span class="hljs-comment">//            where = sqlDeleteStatement.getWhere();</span><br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125;<br>        <span class="hljs-type">String</span> <span class="hljs-variable">tableName</span> <span class="hljs-operator">=</span> sqlTableSource.toString();<br>        <span class="hljs-comment">// where 条件为空，说明是一个批量修改，直接执行，不记录。这种情况记录SQL最好</span><br>        <span class="hljs-keyword">if</span> (where == <span class="hljs-literal">null</span>) &#123;<br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125;<br>        <span class="hljs-comment">// 获取 Connection</span><br>        <span class="hljs-type">Connection</span> <span class="hljs-variable">connection</span> <span class="hljs-operator">=</span> statement.getConnection();<br>        <span class="hljs-comment">// Update影响的主键</span><br>        <span class="hljs-type">Long</span> <span class="hljs-variable">id</span> <span class="hljs-operator">=</span> <span class="hljs-number">0L</span>;<br>        List&lt;Map&lt;String, Object&gt;&gt; beforeImage;<br>        List&lt;Map&lt;String, Object&gt;&gt; afterImage;<br>        <span class="hljs-keyword">if</span> (MONITOR_TABLE.contains(tableName.toLowerCase())) &#123;<br>            <span class="hljs-comment">// 查询前镜像</span><br>            <span class="hljs-type">String</span> <span class="hljs-variable">beforeImagePreSql</span> <span class="hljs-operator">=</span> String.format(<span class="hljs-string">&quot;SELECT * FROM %s where %s&quot;</span>, tableName, where.toString());<br>            <span class="hljs-type">RoutingStatementHandler</span> <span class="hljs-variable">routingStatementHandler</span> <span class="hljs-operator">=</span> (RoutingStatementHandler) getJdkDynamicProxyTargetObject(statementHandler);<br>            <span class="hljs-type">StatementHandler</span> <span class="hljs-variable">delegate</span> <span class="hljs-operator">=</span> (StatementHandler) ReflectUtil.getFieldValue(routingStatementHandler, <span class="hljs-string">&quot;delegate&quot;</span>);<br>            <span class="hljs-comment">//获取mapper方法与xml的映射信息</span><br>            <span class="hljs-type">MappedStatement</span> <span class="hljs-variable">mappedStatement</span> <span class="hljs-operator">=</span> (MappedStatement) ReflectUtil.getFieldValue(delegate, <span class="hljs-string">&quot;mappedStatement&quot;</span>);<br>            List&lt;ParameterMapping&gt; parameterMappings = boundSql.getParameterMappings();<br>            <span class="hljs-type">Object</span> <span class="hljs-variable">parameterObject</span> <span class="hljs-operator">=</span> boundSql.getParameterObject();<br>            List&lt;SQLObject&gt; children = where.getChildren();<br>            <span class="hljs-type">int</span> <span class="hljs-variable">whereConditionCount</span> <span class="hljs-operator">=</span> getWhereConditionCount(children, <span class="hljs-number">0</span>);<br>            List&lt;ParameterMapping&gt; newParameterMapping = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;(parameterMappings.size());<br>            <span class="hljs-comment">// Where语句一般都在最后，所以根据 whereConditionCount 取最后几个参数</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> parameterMappings.size() - whereConditionCount; i &lt; parameterMappings.size(); i++) &#123;<br>                newParameterMapping.add(parameterMappings.get(i));<br>            &#125;<br>            <span class="hljs-type">BoundSql</span> <span class="hljs-variable">beforeImageBoundSql</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BoundSql</span>(mappedStatement.getConfiguration(), beforeImagePreSql, newParameterMapping, parameterObject);<br>            <span class="hljs-comment">//StatementHandler、ResultSetHandler、ParameterHandler运行在这几个中插入自己的代码</span><br>            <span class="hljs-type">ParameterHandler</span> <span class="hljs-variable">parameterHandler</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultParameterHandler</span>(mappedStatement, parameterObject, beforeImageBoundSql);<br>            <span class="hljs-comment">//创建一个 PreparedStatement 对象来将参数化的 SQL 语句发送到数据库。</span><br>            <span class="hljs-type">PreparedStatement</span> <span class="hljs-variable">prepareStatement</span> <span class="hljs-operator">=</span> connection.prepareStatement(beforeImagePreSql);<br>            parameterHandler.setParameters(prepareStatement);<br>            <span class="hljs-type">ResultSet</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> prepareStatement.executeQuery();<br>            beforeImage = convertList(rs);<br>            id = (Long) beforeImage.get(<span class="hljs-number">0</span>).get(<span class="hljs-string">&quot;id&quot;</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 不需要监控的表直接结束</span><br>            <span class="hljs-keyword">return</span> invocation.proceed();<br>        &#125;<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">proceed</span> <span class="hljs-operator">=</span> invocation.proceed();<br>        <span class="hljs-keyword">if</span> (beforeImage.size() == <span class="hljs-number">1</span>) &#123;<br>            <span class="hljs-comment">// 只在更新数据为一条记录时记录日志。已经可以满足绝大部分业务需求了。</span><br>            <span class="hljs-comment">// 查询新数据，此时使用主键查询</span><br>            <span class="hljs-type">String</span> <span class="hljs-variable">afterImageSql</span> <span class="hljs-operator">=</span> String.format(<span class="hljs-string">&quot;SELECT * from %s where id = %s&quot;</span>, tableName, id);<br>            <span class="hljs-type">PreparedStatement</span> <span class="hljs-variable">prepareStatement</span> <span class="hljs-operator">=</span> connection.prepareStatement(afterImageSql);<br>            <span class="hljs-type">ResultSet</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> prepareStatement.executeQuery();<br>            afterImage = convertList(rs);<br>            <span class="hljs-comment">// 新旧数据对比</span><br>            List&lt;Map&lt;String, Object&gt;&gt; difference = difference(beforeImage.get(<span class="hljs-number">0</span>), afterImage.get(<span class="hljs-number">0</span>));<br><span class="hljs-comment">//            System.out.println(difference);</span><br>            <span class="hljs-comment">// 获取用户信息</span><br>            <span class="hljs-type">AuthenticationDto</span> <span class="hljs-variable">authentication</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-type">AuthUtil</span> <span class="hljs-variable">bean</span> <span class="hljs-operator">=</span> SpringUtil.getBean(AuthUtil.class);<br>                authentication = bean.getAuthentication();<br>            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                log.warn(<span class="hljs-string">&quot;获取用户信息失败&quot;</span>);<br>            &#125;<br><br>            <span class="hljs-type">String</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> authentication == <span class="hljs-literal">null</span> ? <span class="hljs-string">&quot;&quot;</span> : String.valueOf(authentication.getUserId());<br>            <span class="hljs-type">String</span> <span class="hljs-variable">merchantId</span> <span class="hljs-operator">=</span> authentication == <span class="hljs-literal">null</span> ? <span class="hljs-string">&quot;&quot;</span> : String.valueOf(authentication.getMerchantId());<br><br>            <span class="hljs-comment">// 插入 opreation_log</span><br>            <span class="hljs-type">String</span> <span class="hljs-variable">operationLogSQL</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;INSERT INTO `pay_1`.`operation_log`(`uid`, `merchantId`, `tableName`, `operationCode`, `primaryKey`, `oriValue`, `newValue`, `recordTime`)&quot;</span> +<br>                    <span class="hljs-string">&quot;VALUES(?, ?, ?, ?, ?, ?, ?, ?);&quot;</span>;<br>            <span class="hljs-type">PreparedStatement</span> <span class="hljs-variable">operationLogStatement</span> <span class="hljs-operator">=</span> connection.prepareStatement(operationLogSQL); <span class="hljs-comment">//创建一个 PreparedStatement 对象来将参数化的 SQL 语句发送到数据库。</span><br>            <span class="hljs-comment">// uid</span><br>            operationLogStatement.setString(<span class="hljs-number">1</span>, userId);<br>            <span class="hljs-comment">// merchantId</span><br>            operationLogStatement.setString(<span class="hljs-number">2</span>, merchantId);<br>            <span class="hljs-comment">//tableName</span><br>            operationLogStatement.setString(<span class="hljs-number">3</span>, tableName);<br>            <span class="hljs-comment">//operationCode</span><br>            operationLogStatement.setString(<span class="hljs-number">4</span>, <span class="hljs-string">&quot;UPDATE&quot;</span>);<br>            <span class="hljs-comment">//primaryKey</span><br>            operationLogStatement.setString(<span class="hljs-number">5</span>, String.valueOf(id));<br>            <span class="hljs-comment">//oriValue</span><br>            operationLogStatement.setString(<span class="hljs-number">6</span>, JsonUtil.entity2Json(difference.get(<span class="hljs-number">0</span>)));<br>            <span class="hljs-comment">//newValue</span><br>            operationLogStatement.setString(<span class="hljs-number">7</span>, JsonUtil.entity2Json(difference.get(<span class="hljs-number">1</span>)));<br>            <span class="hljs-comment">//recordTime</span><br>            operationLogStatement.setInt(<span class="hljs-number">8</span>, TimeUtil.getNow());<br>            operationLogStatement.execute();<br>        &#125;<br>        <span class="hljs-keyword">return</span> proceed;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">plugin</span><span class="hljs-params">(Object target)</span> &#123;<br>        <span class="hljs-keyword">if</span> (target <span class="hljs-keyword">instanceof</span> StatementHandler) &#123;<br>            <span class="hljs-keyword">return</span> Plugin.wrap(target, <span class="hljs-built_in">this</span>);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> target;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setProperties</span><span class="hljs-params">(Properties properties)</span> &#123;<br>        Interceptor.<span class="hljs-built_in">super</span>.setProperties(properties);<br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 获取JDK动态代理的被代理对象</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> proxy</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> Exception</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">getJdkDynamicProxyTargetObject</span><span class="hljs-params">(Object proxy)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">field</span> <span class="hljs-operator">=</span> proxy.getClass().getSuperclass().getDeclaredField(<span class="hljs-string">&quot;h&quot;</span>);<br>        field.setAccessible(<span class="hljs-literal">true</span>);<br>        <span class="hljs-comment">//获取指定对象中此字段的值</span><br>        <span class="hljs-type">Plugin</span> <span class="hljs-variable">pluginProxy</span> <span class="hljs-operator">=</span> (Plugin) field.get(proxy); <span class="hljs-comment">//获取Proxy对象中的此字段的值</span><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">target</span> <span class="hljs-operator">=</span> pluginProxy.getClass().getDeclaredField(<span class="hljs-string">&quot;target&quot;</span>);<br>        target.setAccessible(<span class="hljs-literal">true</span>);<br>        <span class="hljs-keyword">return</span> target.get(pluginProxy);<br>    &#125;<br><br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 解析where条件抽象语法树，获取where条件数量</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> listCommon</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> sum</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getWhereConditionCount</span><span class="hljs-params">(List&lt;SQLObject&gt; listCommon, <span class="hljs-type">int</span> sum)</span> &#123;<br>        <span class="hljs-keyword">for</span> (SQLObject sqlObject : listCommon) &#123;<br>            <span class="hljs-keyword">if</span> (sqlObject <span class="hljs-keyword">instanceof</span> SQLBinaryOpExpr) &#123;<br>                <span class="hljs-type">SQLBinaryOpExpr</span> <span class="hljs-variable">sqlObject1</span> <span class="hljs-operator">=</span> (SQLBinaryOpExpr) sqlObject;<br>                List&lt;SQLObject&gt; chList = sqlObject1.getChildren();<br>                sum = getWhereConditionCount(chList, sum);<br>            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (sqlObject <span class="hljs-keyword">instanceof</span> SQLIdentifierExpr) &#123;<br>                sum += <span class="hljs-number">1</span>;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> sum;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * MYSQL结果集转对象</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> rs</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> List&lt;Map&lt;String, Object&gt;&gt; <span class="hljs-title function_">convertList</span><span class="hljs-params">(ResultSet rs)</span> &#123;<br>        List&lt;Map&lt;String, Object&gt;&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;Map&lt;String, Object&gt;&gt;();<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">ResultSetMetaData</span> <span class="hljs-variable">md</span> <span class="hljs-operator">=</span> rs.getMetaData();<br>            <span class="hljs-type">int</span> <span class="hljs-variable">columnCount</span> <span class="hljs-operator">=</span> md.getColumnCount();<br>            <span class="hljs-keyword">while</span> (rs.next()) &#123;<br>                Map&lt;String, Object&gt; rowData = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;String, Object&gt;();<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>; i &lt;= columnCount; i++) &#123;<br>                    <span class="hljs-type">Object</span> <span class="hljs-variable">object</span> <span class="hljs-operator">=</span> rs.getObject(i);<br>                    <span class="hljs-keyword">if</span> (object <span class="hljs-keyword">instanceof</span> BigInteger) &#123;<br>                        rowData.put(md.getColumnName(i), ((BigInteger) object).longValue());<br>                    &#125; <span class="hljs-keyword">else</span> &#123;<br>                        rowData.put(md.getColumnName(i), object);<br>                    &#125;<br>                &#125;<br>                list.add(rowData);<br>            &#125;<br>        &#125; <span class="hljs-keyword">catch</span> (SQLException e) &#123;<br>            <span class="hljs-comment">// Auto-generated catch block</span><br>            e.printStackTrace();<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                <span class="hljs-keyword">if</span> (rs != <span class="hljs-literal">null</span>) &#123;<br>                    rs.close();<br>                &#125;<br>                rs = <span class="hljs-literal">null</span>;<br>            &#125; <span class="hljs-keyword">catch</span> (SQLException e) &#123;<br>                e.printStackTrace();<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> list;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 结果集对比</span><br><span class="hljs-comment">     * 返回一个List map</span><br><span class="hljs-comment">     * List.get(0) 存储前镜像</span><br><span class="hljs-comment">     * List.get(1) 存储后镜像</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> beforeImage</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> afterImage</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span></span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> List&lt;Map&lt;String, Object&gt;&gt; <span class="hljs-title function_">difference</span><span class="hljs-params">(Map&lt;String, Object&gt; beforeImage, Map&lt;String, Object&gt; afterImage)</span> &#123;<br>        List&lt;Map&lt;String, Object&gt;&gt; result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>        result.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;());<br>        result.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;());<br>        <span class="hljs-keyword">for</span> (Map.Entry&lt;String, Object&gt; beforeEntry : beforeImage.entrySet()) &#123;<br>            <span class="hljs-type">String</span> <span class="hljs-variable">key</span> <span class="hljs-operator">=</span> beforeEntry.getKey();<br>            <span class="hljs-type">Object</span> <span class="hljs-variable">beforeValue</span> <span class="hljs-operator">=</span> beforeEntry.getValue();<br>            <span class="hljs-type">Object</span> <span class="hljs-variable">afterValue</span> <span class="hljs-operator">=</span> afterImage.get(key);<br>            <span class="hljs-keyword">if</span> (!Objects.equals(beforeValue, afterValue)) &#123;<br>                result.get(<span class="hljs-number">0</span>).put(key, beforeValue);<br>                result.get(<span class="hljs-number">1</span>).put(key, afterValue);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
 
 <h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><p>首先，这个需求我做了一定的简化，事实上可以做的更加完善。<br>比如，我只处理 update 语句，只处理单条更新的语句。<br>也只是简单的测试通过，还没有经过生产的验证，如果以后生产验证有问题再修改一下Bug。</p>
 <p>说一下整体思路。<br>首先我们的项目是强依赖 Mybatis 的，所以所有的数据库操作都是经过 Mybatis 的。那我们可以拦截所有的SQL语句，如果发现有更新我们特定表的SQL语句就做一些处理。<br>处理如下：</p>
@@ -254,48 +330,122 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">if</span> (MONITOR_TABLE.contains(tableName.toLowerCase())) &#123;<br>    <span class="hljs-comment">// 查询前镜像</span><br>    <span class="hljs-comment">// .....</span><br>&#125;<br></code></pre></td></tr></table></figure>
 <p>前置镜像的查询方法</p>
 <p>核心方法如下。就是使用 Mybatis 的方法去创建。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java">BoundSql beforeImageBoundSql = <span class="hljs-keyword">new</span> BoundSql(mappedStatement.getConfiguration(), beforeImagePreSql, newParameterMapping, parameterObject);<br><span class="hljs-comment">//StatementHandler、ResultSetHandler、ParameterHandler运行在这几个中插入自己的代码</span><br>ParameterHandler parameterHandler = <span class="hljs-keyword">new</span> DefaultParameterHandler(mappedStatement, parameterObject, beforeImageBoundSql);<br><span class="hljs-comment">//创建一个 PreparedStatement 对象来将参数化的 SQL 语句发送到数据库。</span><br>PreparedStatement prepareStatement = connection.prepareStatement(beforeImagePreSql);<br>parameterHandler.setParameters(prepareStatement);<br>ResultSet rs = prepareStatement.executeQuery();<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">BoundSql</span> <span class="hljs-variable">beforeImageBoundSql</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BoundSql</span>(mappedStatement.getConfiguration(), beforeImagePreSql, newParameterMapping, parameterObject);<br><span class="hljs-comment">//StatementHandler、ResultSetHandler、ParameterHandler运行在这几个中插入自己的代码</span><br><span class="hljs-type">ParameterHandler</span> <span class="hljs-variable">parameterHandler</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultParameterHandler</span>(mappedStatement, parameterObject, beforeImageBoundSql);<br><span class="hljs-comment">//创建一个 PreparedStatement 对象来将参数化的 SQL 语句发送到数据库。</span><br><span class="hljs-type">PreparedStatement</span> <span class="hljs-variable">prepareStatement</span> <span class="hljs-operator">=</span> connection.prepareStatement(beforeImagePreSql);<br>parameterHandler.setParameters(prepareStatement);<br><span class="hljs-type">ResultSet</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> prepareStatement.executeQuery();<br></code></pre></td></tr></table></figure>
 <p>关键点就是 要生成一个新的 BoundSql 和 ParameterHandler。<br>这里的关键点又是参数列表。</p>
 <p>我们的参数一定是包含在 update 语句的参数中的，从 Mybatis 设置参数的源码可知，它是遍历 parameterMapping 从 parameterObject 取值的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br> <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setParameters</span><span class="hljs-params">(PreparedStatement ps)</span> </span>&#123;<br>   ErrorContext.instance().activity(<span class="hljs-string">&quot;setting parameters&quot;</span>).object(mappedStatement.getParameterMap().getId());<br>   List&lt;ParameterMapping&gt; parameterMappings = boundSql.getParameterMappings();<br>   <span class="hljs-keyword">if</span> (parameterMappings != <span class="hljs-keyword">null</span>) &#123;<br>     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; parameterMappings.size(); i++) &#123;<br>       ParameterMapping parameterMapping = parameterMappings.get(i);<br>       <span class="hljs-keyword">if</span> (parameterMapping.getMode() != ParameterMode.OUT) &#123;<br>         Object value;<br>         String propertyName = parameterMapping.getProperty();<br>         <span class="hljs-keyword">if</span> (boundSql.hasAdditionalParameter(propertyName)) &#123; <span class="hljs-comment">// issue #448 ask first for additional params</span><br>           value = boundSql.getAdditionalParameter(propertyName);<br>         &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (parameterObject == <span class="hljs-keyword">null</span>) &#123;<br>           value = <span class="hljs-keyword">null</span>;<br>         &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) &#123;<br>           value = parameterObject;<br>         &#125; <span class="hljs-keyword">else</span> &#123;<br>           MetaObject metaObject = configuration.newMetaObject(parameterObject);<br>           value = metaObject.getValue(propertyName);<br>         &#125;<br>         TypeHandler typeHandler = parameterMapping.getTypeHandler();<br>         JdbcType jdbcType = parameterMapping.getJdbcType();<br>         <span class="hljs-keyword">if</span> (value == <span class="hljs-keyword">null</span> &amp;&amp; jdbcType == <span class="hljs-keyword">null</span>) &#123;<br>           jdbcType = configuration.getJdbcTypeForNull();<br>         &#125;<br>         <span class="hljs-keyword">try</span> &#123;<br>           typeHandler.setParameter(ps, i + <span class="hljs-number">1</span>, value, jdbcType);<br>         &#125; <span class="hljs-keyword">catch</span> (TypeException | SQLException e) &#123;<br>           <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> TypeException(<span class="hljs-string">&quot;Could not set parameters for mapping: &quot;</span> + parameterMapping + <span class="hljs-string">&quot;. Cause: &quot;</span> + e, e);<br>         &#125;<br>       &#125;<br>     &#125;<br>   &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br> <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setParameters</span><span class="hljs-params">(PreparedStatement ps)</span> &#123;<br>   ErrorContext.instance().activity(<span class="hljs-string">&quot;setting parameters&quot;</span>).object(mappedStatement.getParameterMap().getId());<br>   List&lt;ParameterMapping&gt; parameterMappings = boundSql.getParameterMappings();<br>   <span class="hljs-keyword">if</span> (parameterMappings != <span class="hljs-literal">null</span>) &#123;<br>     <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; parameterMappings.size(); i++) &#123;<br>       <span class="hljs-type">ParameterMapping</span> <span class="hljs-variable">parameterMapping</span> <span class="hljs-operator">=</span> parameterMappings.get(i);<br>       <span class="hljs-keyword">if</span> (parameterMapping.getMode() != ParameterMode.OUT) &#123;<br>         Object value;<br>         <span class="hljs-type">String</span> <span class="hljs-variable">propertyName</span> <span class="hljs-operator">=</span> parameterMapping.getProperty();<br>         <span class="hljs-keyword">if</span> (boundSql.hasAdditionalParameter(propertyName)) &#123; <span class="hljs-comment">// issue #448 ask first for additional params</span><br>           value = boundSql.getAdditionalParameter(propertyName);<br>         &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (parameterObject == <span class="hljs-literal">null</span>) &#123;<br>           value = <span class="hljs-literal">null</span>;<br>         &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) &#123;<br>           value = parameterObject;<br>         &#125; <span class="hljs-keyword">else</span> &#123;<br>           <span class="hljs-type">MetaObject</span> <span class="hljs-variable">metaObject</span> <span class="hljs-operator">=</span> configuration.newMetaObject(parameterObject);<br>           value = metaObject.getValue(propertyName);<br>         &#125;<br>         <span class="hljs-type">TypeHandler</span> <span class="hljs-variable">typeHandler</span> <span class="hljs-operator">=</span> parameterMapping.getTypeHandler();<br>         <span class="hljs-type">JdbcType</span> <span class="hljs-variable">jdbcType</span> <span class="hljs-operator">=</span> parameterMapping.getJdbcType();<br>         <span class="hljs-keyword">if</span> (value == <span class="hljs-literal">null</span> &amp;&amp; jdbcType == <span class="hljs-literal">null</span>) &#123;<br>           jdbcType = configuration.getJdbcTypeForNull();<br>         &#125;<br>         <span class="hljs-keyword">try</span> &#123;<br>           typeHandler.setParameter(ps, i + <span class="hljs-number">1</span>, value, jdbcType);<br>         &#125; <span class="hljs-keyword">catch</span> (TypeException | SQLException e) &#123;<br>           <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeException</span>(<span class="hljs-string">&quot;Could not set parameters for mapping: &quot;</span> + parameterMapping + <span class="hljs-string">&quot;. Cause: &quot;</span> + e, e);<br>         &#125;<br>       &#125;<br>     &#125;<br>   &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
 <p>所以这里我们生成一个新的 <code>List&lt;ParameterMapping&gt;</code> 然后从旧的 <code>parameterMappings</code> 中取最后一个值。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">List&lt;ParameterMapping&gt; newParameterMapping = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(parameterMappings.size());<br><span class="hljs-comment">// Where语句一般都在最后，所以根据 whereConditionCount 取最后几个参数</span><br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = parameterMappings.size() - whereConditionCount; i &lt; parameterMappings.size(); i++) &#123;<br>    newParameterMapping.add(parameterMappings.get(i));<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">List&lt;ParameterMapping&gt; newParameterMapping = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;(parameterMappings.size());<br><span class="hljs-comment">// Where语句一般都在最后，所以根据 whereConditionCount 取最后几个参数</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> parameterMappings.size() - whereConditionCount; i &lt; parameterMappings.size(); i++) &#123;<br>    newParameterMapping.add(parameterMappings.get(i));<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>拿到结果集后 放入 <code>List&lt;Map&lt;String, Object&gt;&gt; beforeImage;</code></p>
 <p>后置镜像同理</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">String afterImageSql = String.format(<span class="hljs-string">&quot;SELECT * from %s where id = %s&quot;</span>, tableName, id);<br>PreparedStatement prepareStatement = connection.prepareStatement(afterImageSql);<br>ResultSet rs = prepareStatement.executeQuery();<br>afterImage = convertList(rs);<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">afterImageSql</span> <span class="hljs-operator">=</span> String.format(<span class="hljs-string">&quot;SELECT * from %s where id = %s&quot;</span>, tableName, id);<br><span class="hljs-type">PreparedStatement</span> <span class="hljs-variable">prepareStatement</span> <span class="hljs-operator">=</span> connection.prepareStatement(afterImageSql);<br><span class="hljs-type">ResultSet</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> prepareStatement.executeQuery();<br>afterImage = convertList(rs);<br></code></pre></td></tr></table></figure>
 
 <p>调用 <code>difference</code> 方法拿到结果集的差异。</p>
 <p>这一段是获取用户信息</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"> <span class="hljs-comment">// 获取用户信息</span><br>AuthenticationDto authentication = <span class="hljs-keyword">null</span>;<br><span class="hljs-keyword">try</span> &#123;<br>    AuthUtil bean = SpringUtil.getBean(AuthUtil.class);<br>    authentication = bean.getAuthentication();<br>&#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>    log.warn(<span class="hljs-string">&quot;获取用户信息失败&quot;</span>);<br>&#125;<br><br>String userId = authentication == <span class="hljs-keyword">null</span> ? <span class="hljs-string">&quot;&quot;</span> : String.valueOf(authentication.getUserId());<br>String merchantId = authentication == <span class="hljs-keyword">null</span> ? <span class="hljs-string">&quot;&quot;</span> : String.valueOf(authentication.getMerchantId());<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"> <span class="hljs-comment">// 获取用户信息</span><br><span class="hljs-type">AuthenticationDto</span> <span class="hljs-variable">authentication</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br><span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-type">AuthUtil</span> <span class="hljs-variable">bean</span> <span class="hljs-operator">=</span> SpringUtil.getBean(AuthUtil.class);<br>    authentication = bean.getAuthentication();<br>&#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>    log.warn(<span class="hljs-string">&quot;获取用户信息失败&quot;</span>);<br>&#125;<br><br><span class="hljs-type">String</span> <span class="hljs-variable">userId</span> <span class="hljs-operator">=</span> authentication == <span class="hljs-literal">null</span> ? <span class="hljs-string">&quot;&quot;</span> : String.valueOf(authentication.getUserId());<br><span class="hljs-type">String</span> <span class="hljs-variable">merchantId</span> <span class="hljs-operator">=</span> authentication == <span class="hljs-literal">null</span> ? <span class="hljs-string">&quot;&quot;</span> : String.valueOf(authentication.getMerchantId());<br></code></pre></td></tr></table></figure>
 
 <p>这一段是插入日志表中。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 插入 opreation_log</span><br>String operationLogSQL = <span class="hljs-string">&quot;INSERT INTO `pay_1`.`operation_log`(`uid`, `merchantId`, `tableName`, `operationCode`, `primaryKey`, `oriValue`, `newValue`, `recordTime`)&quot;</span> +<br>        <span class="hljs-string">&quot;VALUES(?, ?, ?, ?, ?, ?, ?, ?);&quot;</span>;<br>PreparedStatement operationLogStatement = connection.prepareStatement(operationLogSQL); <span class="hljs-comment">//创建一个 PreparedStatement 对象来将参数化的 SQL 语句发送到数据库。</span><br><span class="hljs-comment">// uid</span><br>operationLogStatement.setString(<span class="hljs-number">1</span>, userId);<br><span class="hljs-comment">// merchantId</span><br>operationLogStatement.setString(<span class="hljs-number">2</span>, merchantId);<br><span class="hljs-comment">//tableName</span><br>operationLogStatement.setString(<span class="hljs-number">3</span>, tableName);<br><span class="hljs-comment">//operationCode</span><br>operationLogStatement.setString(<span class="hljs-number">4</span>, <span class="hljs-string">&quot;UPDATE&quot;</span>);<br><span class="hljs-comment">//primaryKey</span><br>operationLogStatement.setString(<span class="hljs-number">5</span>, String.valueOf(id));<br><span class="hljs-comment">//oriValue</span><br>operationLogStatement.setString(<span class="hljs-number">6</span>, JsonUtil.entity2Json(difference.get(<span class="hljs-number">0</span>)));<br><span class="hljs-comment">//newValue</span><br>operationLogStatement.setString(<span class="hljs-number">7</span>, JsonUtil.entity2Json(difference.get(<span class="hljs-number">1</span>)));<br><span class="hljs-comment">//recordTime</span><br>operationLogStatement.setInt(<span class="hljs-number">8</span>, TimeUtil.getNow());<br>operationLogStatement.execute();<br></code></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 插入 opreation_log</span><br><span class="hljs-type">String</span> <span class="hljs-variable">operationLogSQL</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;INSERT INTO `pay_1`.`operation_log`(`uid`, `merchantId`, `tableName`, `operationCode`, `primaryKey`, `oriValue`, `newValue`, `recordTime`)&quot;</span> +<br>        <span class="hljs-string">&quot;VALUES(?, ?, ?, ?, ?, ?, ?, ?);&quot;</span>;<br><span class="hljs-type">PreparedStatement</span> <span class="hljs-variable">operationLogStatement</span> <span class="hljs-operator">=</span> connection.prepareStatement(operationLogSQL); <span class="hljs-comment">//创建一个 PreparedStatement 对象来将参数化的 SQL 语句发送到数据库。</span><br><span class="hljs-comment">// uid</span><br>operationLogStatement.setString(<span class="hljs-number">1</span>, userId);<br><span class="hljs-comment">// merchantId</span><br>operationLogStatement.setString(<span class="hljs-number">2</span>, merchantId);<br><span class="hljs-comment">//tableName</span><br>operationLogStatement.setString(<span class="hljs-number">3</span>, tableName);<br><span class="hljs-comment">//operationCode</span><br>operationLogStatement.setString(<span class="hljs-number">4</span>, <span class="hljs-string">&quot;UPDATE&quot;</span>);<br><span class="hljs-comment">//primaryKey</span><br>operationLogStatement.setString(<span class="hljs-number">5</span>, String.valueOf(id));<br><span class="hljs-comment">//oriValue</span><br>operationLogStatement.setString(<span class="hljs-number">6</span>, JsonUtil.entity2Json(difference.get(<span class="hljs-number">0</span>)));<br><span class="hljs-comment">//newValue</span><br>operationLogStatement.setString(<span class="hljs-number">7</span>, JsonUtil.entity2Json(difference.get(<span class="hljs-number">1</span>)));<br><span class="hljs-comment">//recordTime</span><br>operationLogStatement.setInt(<span class="hljs-number">8</span>, TimeUtil.getNow());<br>operationLogStatement.execute();<br></code></pre></td></tr></table></figure>
 
 <p>流程大概就这么多。</p>
 <p>这里其实有一个思考点，关于回滚。<br>所以这里有一个比较讲究的地方，我们这里的 Connection 其实和update语句是同一个 Connection，所以回滚的时候会一起回滚。</p>
 <p>这一篇写的比较匆忙，主要以代码为主</p>
 
-            </div>
-            <hr>
-            <div>
-              <div class="post-metas mb-3">
-                
                 
               </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" class="category-chain-item">后端开发</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+        <a href="/tags/MyBatis/" class="print-no-link">#MyBatis</a>
+      
+        <a href="/tags/%E5%AE%A1%E8%AE%A1%E6%97%A5%E5%BF%97/" class="print-no-link">#审计日志</a>
+      
+    </div>
+  
+</div>
+
+
               
-                <p class="note note-warning">
-                  
-                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
-                  
-                </p>
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Mybatis插件进行数据库操作记录</div>
+      <div>http://yoursite.com/2021/08/30/Mybatis插件进行数据库操作记录-md/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>relengxing</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
               
               
-                <div class="post-prevnext">
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/12/17/dynamic-datasource/">
+                      <a href="/2021/12/17/dynamic-datasource/" title="动态数据源">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">动态数据源</span>
                         <span class="visible-mobile">上一篇</span>
@@ -305,8 +455,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/08/06/jenkins-cicd%E9%83%A8%E7%BD%B2/">
-                        <span class="hidden-mobile">jenkins_CICD部署.md</span>
+                      <a href="/2021/08/06/jenkins-cicd%E9%83%A8%E7%BD%B2/" title="Jenkins CICD部署">
+                        <span class="hidden-mobile">Jenkins CICD部署</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -321,25 +471,59 @@
         </div>
       </div>
     </div>
-    
-      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
-        <div id="toc">
-  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
   <div class="toc-body" id="toc-body"></div>
 </div>
 
-      </div>
-    
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-<!-- Custom -->
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
 
 
     
 
     
-      <a id="scroll-top-button" href="#" role="button">
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
         <i class="iconfont icon-arrowup" aria-hidden="true"></i>
       </a>
     
@@ -358,32 +542,29 @@
       <div class="modal-body mx-3">
         <div class="md-form mb-5">
           <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v"
-                 for="local-search-input">关键词</label>
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
         </div>
         <div class="list-group" id="local-search-result"></div>
       </div>
     </div>
   </div>
 </div>
+
     
 
     
   </main>
 
-  <footer class="text-center mt-5 py-3">
-  <div class="footer-content">
-    
-  </div>
+  <footer>
+    <div class="footer-inner">
   
-
   
-
   
-</footer>
+</div>
 
+  </footer>
 
-  <!-- SCRIPTS -->
+  <!-- Scripts -->
   
   <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
@@ -402,7 +583,23 @@
 <script  src="/js/events.js" ></script>
 <script  src="/js/plugins.js" ></script>
 
-<!-- Plugins -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
 
 
   
@@ -411,25 +608,99 @@
 
 
 
+
   
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
 
 
+  <script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js></script>
 
-  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
-
-
-
-  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+  <script>Fluid.plugins.codeWidget();</script>
 
 
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
 
-  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
 
 
+  
+<script>
+  Fluid.utils.createScript('https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
 
-  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
 
-
+  <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
 
@@ -437,35 +708,15 @@
 
 
 
-
-  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var title = document.getElementById('subtitle').title;
-      
-      typing(title)
-      
-    })(window, document);
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 主题的启动项 保持在最底部 -->
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
 <script  src="/js/boot.js" ></script>
 
 
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 <script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false});</script></body>
 </html>
