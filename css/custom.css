@@ -1,0 +1,27 @@
+.page-content table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.page-content table th,
+.page-content table td {
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+}
+
+.page-content table th {
+  background: #f6f8fa;
+}
+
+.page-content blockquote {
+  border-left: 3px solid #ccc;
+  margin: 6px 0;
+  padding: 2px 14px;
+  background: #f6f8fa;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.page-content blockquote p {
+  margin: 0;
+}
